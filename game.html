@@ -10,9 +10,9 @@
         body {
             margin: 0;
             padding: 0;
-            /* 두 번째 대형 야구장 배경 레이아웃 최적화 */
-            background: linear-gradient(rgba(11, 14, 20, 0.4), rgba(11, 14, 20, 0.85)), 
-                        url('https://i.ibb.co/3sX8M8f/Designer-4.png') no-repeat center center fixed;
+            /* 폴더에 저장한 stadium.png 대형 전광판 배경 적용 */
+            background: linear-gradient(rgba(11, 14, 20, 0.35), rgba(11, 14, 20, 0.75)), 
+                        url('stadium.png') no-repeat center center fixed;
             background-size: cover;
             color: #ffffff;
             font-family: 'Black Han Sans', sans-serif;
@@ -30,7 +30,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             padding: 12px 20px;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -40,12 +40,11 @@
         .scoreboard {
             width: 100%;
             max-width: 800px;
-            background: rgba(17, 21, 28, 0.9);
+            background: rgba(17, 21, 28, 0.85);
             border: 4px solid #00bcd4;
             border-radius: 12px;
-            padding: 20px;
+            padding: 15px 20px;
             box-sizing: border-box;
-            box-shadow: 0 0 25px rgba(0, 188, 212, 0.4);
             margin-bottom: 20px;
         }
 
@@ -53,61 +52,34 @@
             text-align: center;
             font-family: 'Orbitron', sans-serif;
             color: #f2a900;
-            font-size: 1.4rem;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
             border-bottom: 2px dashed #444;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
 
-        .score-table {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .team-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(0,0,0,0.5);
-            padding: 15px 20px;
-            border-radius: 8px;
-        }
-        .board-team-name { font-size: 1.5rem; }
-        .board-score {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
-            color: #fff;
-        }
+        .score-table { display: flex; flex-direction: column; gap: 10px; }
+        .team-row { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.6); padding: 12px 20px; border-radius: 8px; }
+        .board-team-name { font-size: 1.4rem; }
+        .board-score { font-family: 'Orbitron', sans-serif; font-size: 2.4rem; }
 
-        /* 🎯 실시간 타석 미션 보드 디자인 */
         .action-board {
             width: 100%;
             max-width: 800px;
             background: rgba(0, 0, 0, 0.85);
-            border: 3px solid #f2a900;
+            border: 3px solid #ff4d4d;
             border-radius: 12px;
             padding: 20px;
             box-sizing: border-box;
         }
-        .action-title {
-            font-size: 1.3rem;
-            color: #00bcd4;
-            margin-bottom: 15px;
-            text-align: center;
-        }
+        .action-title { font-size: 1.3rem; color: #ff4d4d; margin-bottom: 15px; text-align: center; }
 
-        .mission-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+        .mission-list { display: flex; flex-direction: column; gap: 10px; }
         .mission-btn {
             width: 100%;
-            padding: 15px 20px;
+            padding: 16px 20px;
             font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             border: 2px solid #444;
             border-radius: 8px;
             background: #222;
@@ -116,30 +88,27 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s ease;
         }
         .mission-btn.cleared {
-            background: linear-gradient(135deg, #2d9a74, #1a5c43);
-            border-color: #4abc96;
-            color: #fff;
+            background: linear-gradient(135deg, #1d6f4f, #11422f);
+            border-color: #2d9a74;
+            color: #888;
             text-decoration: line-through;
-            opacity: 0.7;
-            cursor: not-allowed;
+            pointer-events: none;
         }
 
         .log-container {
             width: 100%;
             max-width: 800px;
-            margin-top: 20px;
+            margin-top: 15px;
             background: rgba(0, 0, 0, 0.9);
             border: 1px solid #333;
             border-radius: 8px;
-            padding: 15px;
-            box-sizing: border-box;
-            max-height: 180px;
+            padding: 12px;
+            max-height: 140px;
             overflow-y: auto;
         }
-        .log-item { padding: 6px 0; font-size: 0.95rem; border-bottom: 1px dashed #222; text-align: left; }
+        .log-item { padding: 5px 0; font-size: 0.9rem; border-bottom: 1px dashed #222; text-align: left; }
     </style>
 </head>
 <body>
@@ -147,7 +116,7 @@
     <div class="user-bar">
         <div>
             <span id="user-team-display" style="color:#f2a900;"></span> 
-            <span id="user-player-display" style="color: #00bcd4;"></span> 선수 타석 ⚾
+            <span id="user-player-display" style="color: #00bcd4;"></span> 타석 활성화 중 ⚾
         </div>
         <button style="background:#ff4d4d; border:none; color:white; padding:6px 12px; border-radius:4px; cursor:pointer;" onclick="location.href='index.html'">교체/퇴장</button>
     </div>
@@ -167,7 +136,7 @@
     </div>
 
     <div class="action-board">
-        <div class="action-title">🎯 부여된 5개 미션을 격파해 안타를 치세요!</div>
+        <div class="action-title" id="dynamic-action-title">⚠️ 상대팀이 지정한 미션 대기 중...</div>
         <div class="mission-list" id="game-mission-list"></div>
     </div>
 
@@ -181,80 +150,18 @@
     const myTeam = localStorage.getItem('baseball_team'); 
     const myTeamName = localStorage.getItem('baseball_team_name');
     const myPlayer = localStorage.getItem('baseball_player');
-    const rawMissions = localStorage.getItem('baseball_selected_missions');
-    const myMissions = rawMissions ? JSON.parse(rawMissions) : [];
 
     if (!myTeam || !myPlayer) window.location.href = 'index.html';
 
     document.getElementById('user-team-display').innerText = myTeamName;
     document.getElementById('user-player-display').innerText = `[${myPlayer}]`;
 
-    // 어떤 미션이 클리어되었는지 기록 추적 배열
+    let serverMissions = [];
     let clearedMissions = [];
 
-    function renderMissions() {
-        const container = document.getElementById('game-mission-list');
-        container.innerHTML = "";
-
-        // 루타 매핑 텍스트 목록
-        const hitSpecs = ["1루타 (+1)", "2루타 (+2)", "3루타 (+3)", "홈런 (+4)", "2점 홈런 🎉 (+4)"];
-
-        myMissions.forEach((mission, index) => {
-            const btn = document.createElement('button');
-            btn.className = "mission-btn";
-            
-            const isCleared = clearedMissions.includes(mission);
-            if(isCleared) btn.classList.add('cleared');
-
-            btn.innerHTML = `<span>🔥 미션 ${index+1}: ${mission}</span> <b style="color:#f2a900;">${hitSpecs[index]}</b>`;
-            btn.onclick = () => {
-                if(!isCleared) triggerMissionClear(mission, index + 1);
-            };
-            container.appendChild(btn);
-        });
-    }
-
-    function triggerMissionClear(missionName, currentStep) {
-        let hitText = "";
-        let points = 0;
-
-        if (currentStep === 1) { hitText = "1루타 안타!"; points = 1; }
-        else if (currentStep === 2) { hitText = "우중간 가르는 2루타!!"; points = 2; }
-        else if (currentStep === 3) { hitText = "펜스 직격 3루타!!!"; points = 3; }
-        else if (currentStep === 4) { hitText = "💥 대형 솔로 홈런!!! 💥"; points = 4; }
-        else if (currentStep === 5) { hitText = "💥🎉 5개 올클리어!! 2점 백투백 홈런!!! (+코스머니 1,000원)"; points = 4; }
-
-        if(!confirm(`[${missionName}] 미션을 완수하여 점수를 올리시겠습니까?`)) return;
-
-        clearedMissions.push(missionName);
-        
-        const currentScore = parseInt(document.getElementById(`score-${myTeam}`).innerText) || 0;
-        const newScore = currentScore + points;
-
-        const now = new Date();
-        const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-        const logData = {
-            team: myTeam,
-            teamName: myTeamName,
-            player: myPlayer,
-            hitText: `미션 성공! [${hitText}]`,
-            time: timeStr
-        };
-
-        // 점수 전송
-        fetch(`${FIREBASE_URL}scores/${myTeam}.json`, { method: 'PUT', body: JSON.stringify(newScore) })
-        .then(() => fetch(`${FIREBASE_URL}logs.json`, { method: 'POST', body: JSON.stringify(logData) }))
-        .then(() => {
-            renderMissions();
-            initLiveScoreboard();
-            if(currentStep === 5) {
-                alert("⚾ 대박! 5개 미션 올클리어! 코스머니 +1,000 보너스 획득에 성공했습니다! 점수판을 확인하세요!");
-            }
-        });
-    }
-
-    function initLiveScoreboard() {
+    // 실시간으로 점수판 및 상대가 던진 미션을 리프레시 동기화합니다.
+    function syncGameData() {
+        // 1. 전광판 점수 가져오기
         fetch(`${FIREBASE_URL}scores.json`).then(res => res.json()).then(data => {
             if(data) {
                 document.getElementById('score-A').innerText = data.A !== undefined ? data.A : 0;
@@ -262,6 +169,54 @@
             }
         });
 
+        // 2. 💡 상대방이 나한테 던진 미션 리스트 실시간 조회
+        fetch(`${FIREBASE_URL}missions/${myTeam}.json`).then(res => res.json()).then(data => {
+            const listContainer = document.getElementById('game-mission-list');
+            const titleEl = document.getElementById('dynamic-action-title');
+
+            if (!data || !data.list || data.list.length === 0) {
+                titleEl.innerText = "⏳ 상대 팀이 미션을 선택할 때까지 대기 중입니다...";
+                listContainer.innerHTML = "";
+                return;
+            }
+
+            titleEl.innerText = `💣 상대팀이 던진 미션 리스트 (격파 시 누적 점수 증가!)`;
+            serverMissions = data.list;
+            
+            // 이미 격파해서 DB에 저장되어 있던 미션 상태 체크
+            fetch(`${FIREBASE_URL}cleared_missions/${myTeam}/${myPlayer}.json`).then(res => res.json()).then(cData => {
+                clearedMissions = cData ? Object.values(cData) : [];
+                
+                listContainer.innerHTML = "";
+                // 현재 내가 클리어한 개수에 기반해서 다음 보상 안내
+                const currentClearCount = clearedMissions.length;
+
+                serverMissions.forEach((mission) => {
+                    const btn = document.createElement('button');
+                    btn.className = "mission-btn";
+                    
+                    const isCleared = clearedMissions.includes(mission);
+                    if(isCleared) {
+                        btn.classList.add('cleared');
+                        btn.innerHTML = `<span>✅ 완료: ${mission}</span>`;
+                    } else {
+                        // 💡 미션을 수행한 누적 개수가 늘어날 때마다 점수가 늘어나는 동적 가이드 매핑
+                        let nextScoreTip = "";
+                        if(currentClearCount === 0) nextScoreTip = "1루타 (+1)";
+                        else if(currentClearCount === 1) nextScoreTip = "2루타 (+2)";
+                        else if(currentClearCount === 2) nextScoreTip = "3루타 (+3)";
+                        else if(currentClearCount === 3) nextScoreTip = "홈런 (+4)";
+                        else if(currentClearCount === 4) nextScoreTip = "2점홈런 🎉 (+4)";
+
+                        btn.innerHTML = `<span>🎯 미션: ${mission}</span> <b style="color:#ff4d4d;">성공 시 ${nextScoreTip}</b>`;
+                        btn.onclick = () => clearTargetMission(mission, currentClearCount + 1);
+                    }
+                    listContainer.appendChild(btn);
+                });
+            });
+        });
+
+        // 3. 중계 리포트 피드 갱신
         fetch(`${FIREBASE_URL}logs.json?orderBy="$key"&limitToLast=10`).then(res => res.json()).then(data => {
             const feed = document.getElementById('log-feed');
             if(!data) return;
@@ -276,9 +231,58 @@
         });
     }
 
-    renderMissions();
-    setInterval(initLiveScoreboard, 2000);
-    window.onload = initLiveScoreboard;
+    function clearTargetMission(missionName, nextStep) {
+        let hitText = "";
+        let points = 0;
+
+        // 누적 격파 성공 횟수에 따라 차례대로 가중치 상승 구현!
+        if (nextStep === 1) { hitText = "1구째 미션 격파! 1루타 안타!"; points = 1; }
+        else if (nextStep === 2) { hitText = "2구째 미션 격파! 우중간 가르는 2루타!!"; points = 2; }
+        else if (nextStep === 3) { hitText = "3구째 미션 격파! 펜스 대형 3루타!!!"; points = 3; }
+        else if (nextStep === 4) { hitText = "4구째 미션 격파! 대형 솔로 홈런 짜릿하게 작렬!!!"; points = 4; }
+        else if (nextStep === 5) { hitText = "🔥 5개 미션 올클리어 완료!! 백투백 2점 홈런!!! [보너스 코스머니 +1,000원]"; points = 4; }
+
+        if(!confirm(`[${missionName}] 미션을 달성하여 타격을 날릴까요?`)) return;
+
+        // 파이어베이스에 클리어 현황 저장
+        fetch(`${FIREBASE_URL}cleared_missions/${myTeam}/${myPlayer}.json`, {
+            method: 'POST',
+            body: JSON.stringify(missionName)
+        })
+        .then(() => {
+            // 현재 내 팀 스코어 리딩 후 가산
+            const currentScore = parseInt(document.getElementById(`score-${myTeam}`).innerText) || 0;
+            const newScore = currentScore + points;
+
+            return fetch(`${FIREBASE_URL}scores/${myTeam}.json`, {
+                method: 'PUT',
+                body: JSON.stringify(newScore)
+            });
+        })
+        .then(() => {
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+            
+            const logData = {
+                team: myTeam,
+                teamName: myTeamName,
+                player: myPlayer,
+                hitText: hitText,
+                time: timeStr
+            };
+
+            return fetch(`${FIREBASE_URL}logs.json`, { method: 'POST', body: JSON.stringify(logData) });
+        })
+        .then(() => {
+            syncGameData();
+            if(nextStep === 5) {
+                alert("🎉 축하합니다! 모든 미션을 전부 격파하여 2점 홈런과 함께 [보너스 코스머니 +1,000원]을 획득했습니다!");
+            }
+        });
+    }
+
+    setInterval(syncGameData, 2000);
+    window.onload = syncGameData;
 </script>
 </body>
 </html>
