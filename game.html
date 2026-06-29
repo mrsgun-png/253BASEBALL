@@ -54,16 +54,27 @@
             box-sizing: border-box;
         }
 
-        /* stadium.png 원근감에 맞춘 주자 애니메이션 좌표 설정 */
-        .base-runner {
-            position: absolute;
-            font-size: 1.4rem;
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-            z-index: 99;
-            transform: translate(-50%, -50%);
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.8));
-            display: none;
-        }
+        /* 🏟️ 오락실 전광판 스타일의 네온 주자 표시 */
+.base-runner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: #fffb00; /* 오락실 전광판 특유의 밝은 노란색 */
+    border-radius: 50%;
+    z-index: 99;
+    transform: translate(-50%, -50%);
+    display: none;
+    box-shadow: 0 0 10px #fffb00, 0 0 20px #ffea00; /* 번쩍이는 네온 효과 */
+    animation: arcade-blink 0.6s infinite alternate; /* 깜빡이는 애니메이션 */
+    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 옛날 게임기처럼 파르르 깜빡이는 효과 */
+@keyframes arcade-blink {
+    0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.9); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+
 
         .scoreboard {
             width: 100%;
