@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -45,7 +46,7 @@
             font-family: 'Black Han Sans', sans-serif;
         }
 
-        /* 전광판 대형 컨테이너 (보내주신 전광판 스타일 모티브) */
+        /* 전광판 대형 컨테이너 */
         .scoreboard {
             width: 100%;
             max-width: 700px;
@@ -100,7 +101,7 @@
             text-shadow: 0 0 10px rgba(242,169,0,0.5);
         }
 
-        /* 액션 컨트롤 보드 (타석 버튼 구역) */
+        /* 액션 컨트롤 보드 */
         .action-board {
             width: 100%;
             max-width: 700px;
@@ -113,9 +114,8 @@
         }
         .action-title {
             font-size: 1.2rem;
-            color: #fff;
-            margin-bottom: 15px;
             color: #a0aec0;
+            margin-bottom: 15px;
         }
 
         /* 야구 타격 버튼 그리드 */
@@ -141,11 +141,10 @@
             box-shadow: 0 1px 0px rgba(0,0,0,0.4);
         }
         
-        /* 버튼별 고유 색상 */
-        .btn-single { background: linear-gradient(#4abc96, #2d9a74); } /* 1루타 */
-        .btn-double { background: linear-gradient(#3182ce, #2b6cb0); } /* 2루타 */
-        .btn-triple { background: linear-gradient(#805ad5, #6b46c1); } /* 3루타 */
-        .btn-homerun { background: linear-gradient(#dd6b20, #c05621); animation: pulse 1.5s infinite; } /* 홈런 */
+        .btn-single { background: linear-gradient(#4abc96, #2d9a74); } 
+        .btn-double { background: linear-gradient(#3182ce, #2b6cb0); } 
+        .btn-triple { background: linear-gradient(#805ad5, #6b46c1); } 
+        .btn-homerun { background: linear-gradient(#dd6b20, #c05621); animation: pulse 1.5s infinite; } 
 
         @keyframes pulse {
             0% { box-shadow: 0 4px 0px rgba(0,0,0,0.4), 0 0 0px rgba(221,107,32,0.4); }
@@ -179,15 +178,9 @@
             padding: 6px 0;
             border-bottom: 1px dashed #1a1a1a;
             text-align: left;
-            animation: fadeIn 0.3s ease;
         }
         .log-team-a { color: #ff8c5a; }
         .log-team-b { color: #4fa7ff; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
 <body>
@@ -232,69 +225,68 @@
     </div>
 
 <script>
-    // 🌟 [중요] 본인의 Firebase Realtime Database 주소를 여기에 똑같이 넣어주세요!
+    // 🌟 여기에 새 파이어베이스 주소를 오타없이 한 줄로 정확하게 넣어주세요!
     const FIREBASE_URL = "https://cos253baseball-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
-    // 브라우저가 기억하고 있는 로그인 정보 꺼내오기
-    const myTeam = localStorage.getItem('baseball_team'); // 'A' 또는 'B'
+    const myTeam = localStorage.getItem('baseball_team'); 
     const myTeamName = localStorage.getItem('baseball_team_name');
     const myPlayer = localStorage.getItem('baseball_player');
 
-    // 로그인 정보가 없으면 다시 로그인 페이지로 쫓아내기
     if (!myTeam || !myPlayer) {
         window.location.href = 'index.html';
     }
 
-    // 상단 텍스트 출력
     document.getElementById('user-team-display').innerText = myTeamName;
     document.getElementById('user-player-display').innerText = `[${myPlayer}]`;
 
-    // 1. 파이어베이스 데이터 실시간 모니터링 수신 함수
     function initLiveScoreboard() {
-        // 점수 실시간 연동 듣기
+        // 전광판 점수 가져오기
         fetch(`${FIREBASE_URL}scores.json`)
         .then(res => res.json())
         .then(data => {
             if(data) {
-                document.getElementById('score-A').innerText = data.A || 0;
-                document.getElementById('score-B').innerText = data.B || 0;
+                document.getElementById('score-A').innerText = data.A !== undefined ? data.A : 0;
+                document.getElementById('score-B').innerText = data.B !== undefined ? data.B : 0;
             }
-        });
+        }).catch(err => console.log("점수 로드 실패"));
 
-        // 경기 중계 로그 실시간 수신
+        // 최근 15개 중계 데이터 가져오기
         fetch(`${FIREBASE_URL}logs.json?orderBy="$key"&limitToLast=15`)
         .then(res => res.json())
         .then(data => {
             const feed = document.getElementById('log-feed');
             if(!data || Object.keys(data).length === 0) return;
             
-            feed.innerHTML = ""; // 기존 피드 초기화
+            feed.innerHTML = ""; 
             
-            // 파이어베이스 데이터 정렬해서 최신순으로 화면 출력
-            const sortedLogs = Object.values(data).reverse();
-            sortedLogs.forEach(log => {
-                const logDiv = document.createElement('div');
-                logDiv.className = `log-item ${log.team === 'A' ? 'log-team-a' : 'log-team-b'}`;
-                logDiv.innerHTML = `⏱️ [${log.time}] <b>${log.teamName}</b> ${log.player} 선수 ➡️ <b>${log.hitText}</b>`;
-                feed.appendChild(logDiv);
+            // 데이터 가공 및 출력 에러 방지(undefined 방지 방어코드)
+            const sortedKeys = Object.keys(data).reverse();
+            sortedKeys.forEach(key => {
+                const log = data[key];
+                if(log && log.player) {
+                    const logDiv = document.createElement('div');
+                    logDiv.className = `log-item ${log.team === 'A' ? 'log-team-a' : 'log-team-b'}`;
+                    
+                    const tName = log.teamName || (log.team === 'A' ? "253 삼구삼진스" : "코스 라이언즈");
+                    const hText = log.hitText || "안타 타격";
+                    const tStr = log.time || "진행중";
+
+                    logDiv.innerHTML = `⏱️ [${tStr}] <b>${tName}</b> ${log.player} 선수 ➡️ <b>${hText}</b>`;
+                    feed.appendChild(logDiv);
+                }
             });
-        });
+        }).catch(err => console.log("로그 로드 실패"));
     }
 
-    // 2. 버튼 클릭 시 점수 올리기 및 로그 기록 전송 함수
     function hitBall(scorePoints, hitText) {
         if(!confirm(`[${hitText}] 점수를 반영하시겠습니까?`)) return;
 
-        // 현재 전광판 점수 가져오기
-        const currentScoreElement = document.getElementById(`score-${myTeam}`);
-        const currentScore = parseInt(currentScoreElement.innerText) || 0;
+        const currentScore = parseInt(document.getElementById(`score-${myTeam}`).innerText) || 0;
         const newScore = currentScore + scorePoints;
 
-        // 실시간 현재 시간 구하기 (시:분:초)
         const now = new Date();
         const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
 
-        // 전송할 로그 데이터 구조
         const logData = {
             team: myTeam,
             teamName: myTeamName,
@@ -304,26 +296,24 @@
             time: timeStr
         };
 
-        // A. 파이어베이스에 점수 업데이트 업데이트 호출
+        // 점수 전송
         fetch(`${FIREBASE_URL}scores/${myTeam}.json`, {
             method: 'PUT',
             body: JSON.stringify(newScore)
         })
         .then(() => {
-            // B. 파이어베이스에 중계 전광판 기록 추가 호출
+            // 중계 로그 전송
             return fetch(`${FIREBASE_URL}logs.json`, {
                 method: 'POST',
                 body: JSON.stringify(logData)
             });
         })
         .then(() => {
-            // 전송 완료 시 실시간으로 화면 즉각 새로고침 리로드 호출
             initLiveScoreboard();
         })
-        .catch(err => alert("네트워크 데이터 전송 실패! 다시 시도해 주세요."));
+        .catch(err => alert("데이터 전송 오류! 주소를 다시 확인해 주세요."));
     }
 
-    // 주기적으로 전광판 데이터 갱신 연동 (1.5초마다 파이어베이스 동기화 수신)
     setInterval(initLiveScoreboard, 1500);
     window.onload = initLiveScoreboard;
 </script>
