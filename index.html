@@ -19,65 +19,63 @@
             font-family: 'Black Han Sans', sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center; /* 위아래 중앙 배치로 미니 화면 최적화 */
+            align-items: center; 
             min-height: 100vh;
-            overflow: hidden; /* 위아래 스크롤 바운스 방지 */
+            overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
         .login-container {
-            width: 94%;
-            max-width: 420px; /* 조금 더 슬림하게 조정 */
-            padding: 15px 12px;
+            width: 92%;
+            max-width: 450px; /* 📱 갤럭시 표준 모델(S24 등)의 시원한 화면에 맞춘 가로폭 확장 */
+            padding: 22px 16px;
             text-align: center;
-            /* 배경 이미지 처리 방식 개선하여 터치 간섭 차단 */
             background: linear-gradient(rgba(11, 14, 20, 0.82), rgba(11, 14, 20, 0.95)), 
                         url('main.png') no-repeat center center; 
             background-size: cover;
             border: 3px solid #f2a900;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(242, 169, 0, 0.3);
+            border-radius: 14px;
+            box-shadow: 0 0 25px rgba(242, 169, 0, 0.35);
             position: relative;
             z-index: 1;
         }
 
         .main-title {
-            font-size: 2.0rem; /* 아이폰 미니를 위해 타이틀 크기 축소 */
+            font-size: 2.5rem; /* 갤럭시 화면에 맞춰 타이틀 크기 가독성 업그레이드 */
             color: #f2a900;
             text-shadow: 2px 2px 0px #4a154b, 4px 4px 0px #000;
-            margin: 2px 0;
+            margin: 5px 0;
             letter-spacing: 1px;
         }
 
         .sub-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             color: #00bcd4;
-            margin-bottom: 12px;
+            margin-bottom: 18px;
             text-shadow: 1px 1px 0px #000;
         }
 
         .team-selection {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 12px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
-        /* 클릭 활성화 및 가시성 직관화 */
         .team-card {
             background: rgba(20, 24, 33, 0.9);
             border: 2px solid #333;
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-align: left;
             transition: all 0.2s ease;
             position: relative;
-            z-index: 10; /* 터치 우선순위 상향 */
+            z-index: 10; 
         }
 
         .team-card.team-a.selected {
@@ -93,13 +91,13 @@
         }
 
         .team-logo {
-            width: 38px;
-            height: 38px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: bold;
             flex-shrink: 0;
         }
@@ -113,20 +111,19 @@
         }
 
         .team-name-text {
-            font-size: 1.0rem;
-            margin-bottom: 4px;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
         }
 
-        /* 모바일 터치 미스 방지 및 네이티브 가동성 확보 */
         .member-select {
             width: 100%;
             padding: 10px;
             font-family: 'Black Han Sans', sans-serif;
-            font-size: 0.95rem;
+            font-size: 1.0rem; /* 안드로이드 가독성 최적화 */
             background-color: #1a1d24;
             color: #fff;
             border: 2px solid #444;
-            border-radius: 6px;
+            border-radius: 8px;
             position: relative;
             z-index: 20;
             outline: none;
@@ -138,28 +135,28 @@
             display: none;
             background: rgba(0, 0, 0, 0.95);
             border: 2px solid #00bcd4;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
             text-align: left;
         }
         .mission-section.active { display: block; }
         
         .mission-header {
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             color: #00bcd4;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        /* 높이가 좁은 폰(아이폰 미니)에 맞게 최대 높이 축소 및 터치 최적화 */
+        /* 📱 세로로 긴 갤럭시 화면 특성을 고려해 리스트 높이 확보 */
         .mission-grid {
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            max-height: 130px; 
+            gap: 6px;
+            max-height: 160px; 
             overflow-y: auto;
             padding-right: 2px;
         }
@@ -167,9 +164,9 @@
         .mission-item {
             background: #1e1e1e;
             border: 1px solid #333;
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
             cursor: pointer;
             user-select: none;
             -webkit-user-select: none;
@@ -182,9 +179,9 @@
 
         .start-btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             background: linear-gradient(#f2a900, #ff8c00);
             color: #000;
             border: none;
@@ -198,7 +195,23 @@
             background: #444;
             color: #777;
             box-shadow: none;
-            cursor: not-allowed;
+        }
+
+        /* 관계자 리셋 버튼 스타일 */
+        .admin-reset-wrap {
+            margin-top: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 100;
+        }
+        .admin-reset-btn {
+            background: none;
+            border: 1px dashed #444;
+            color: #666;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -249,6 +262,11 @@
     </div>
 
     <button class="start-btn" id="start-btn" onclick="enterGame()" disabled>팀과 선수를 선택하세요</button>
+
+    <!-- 관계자 리셋 버튼 탑재 -->
+    <div class="admin-reset-wrap">
+        <button class="admin-reset-btn" onclick="adminResetData()">⚙️ 관계자 전체 데이터 리셋</button>
+    </div>
 </div>
 
 <script>
@@ -268,15 +286,8 @@
         "크로스 셀링 세트 코디 판매"
     ];
 
-    // select 클릭 시 상위 team-card 클릭 이벤트 버블링으로 인한 혼선 방지 안정화
-    document.getElementById('members-a').addEventListener('click', (e) => {
-        e.stopPropagation();
-        selectTeam('A');
-    });
-    document.getElementById('members-b').addEventListener('click', (e) => {
-        e.stopPropagation();
-        selectTeam('B');
-    });
+    document.getElementById('members-a').addEventListener('click', (e) => { e.stopPropagation(); selectTeam('A'); });
+    document.getElementById('members-b').addEventListener('click', (e) => { e.stopPropagation(); selectTeam('B'); });
 
     function initMissions() {
         const grid = document.getElementById('mission-grid');
@@ -285,10 +296,7 @@
             const div = document.createElement('div');
             div.className = "mission-item";
             div.innerText = `${idx+1}. ${m}`;
-            div.onclick = (e) => { 
-                e.stopPropagation();
-                if(!isMissionAlreadySet) toggleMission(m, div); 
-            };
+            div.onclick = (e) => { e.stopPropagation(); if(!isMissionAlreadySet) toggleMission(m, div); };
             grid.appendChild(div);
         });
     }
@@ -330,10 +338,6 @@
                 document.getElementById('mission-grid').style.opacity = "1.0";
                 initMissions();
             }
-            checkReady();
-        }).catch(err => {
-            // 오프라인 상태 대비 활성화 보장
-            document.getElementById('mission-section').classList.add('active');
             checkReady();
         });
     }
@@ -397,7 +401,42 @@
             window.location.href = 'game.html';
         }
     }
-}
+
+    // 마스터 리셋 함수 (미션, 점수, 완료현황 기록을 파이어베이스에서 완전 삭제)
+    function adminResetData() {
+        const adminPassword = "253"; 
+        const inputPassword = prompt("관계자 비밀번호를 입력하세요:");
+
+        if (inputPassword === null) return; 
+
+        if (inputPassword === adminPassword) {
+            if (confirm("⚠️ 정말로 오늘자 [점수], [지정 미션], [개인별 수행 현황]을 완전히 리셋하시겠습니까?\n이 작업은 즉시 game.html에도 전파됩니다.")) {
+                
+                const missionUrl = `${FIREBASE_URL}daily_missions/${todayStr}.json`;
+                const scoreUrl = `${FIREBASE_URL}daily_scores/${todayStr}.json`;
+                const clearedUrl = `${FIREBASE_URL}daily_cleared/${todayStr}.json`; 
+                const logUrl = `${FIREBASE_URL}logs.json`; // 실시간 로그 피드 초기화
+
+                Promise.all([
+                    fetch(missionUrl, { method: 'DELETE' }),
+                    fetch(scoreUrl, { method: 'DELETE' }),
+                    fetch(clearedUrl, { method: 'DELETE' }),
+                    fetch(logUrl, { method: 'DELETE' })
+                ])
+                .then(() => {
+                    alert("✅ 오늘자 모든 데이터가 깨끗하게 공장 초기화되었습니다!");
+                    window.location.reload(); 
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("❌ 리셋 작업 중 오류가 발생했습니다.");
+                });
+            }
+        } else {
+            alert("❌ 비밀번호가 틀렸습니다. 관리자만 가능합니다.");
+        }
+    }
+
     initMissions();
 </script>
 </body>
