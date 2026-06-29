@@ -7,6 +7,10 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Black+Han+Sans&display=swap');
 
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -15,84 +19,87 @@
             font-family: 'Black Han Sans', sans-serif;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center; /* 위아래 중앙 배치로 미니 화면 최적화 */
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden; /* 위아래 스크롤 바운스 방지 */
             -webkit-tap-highlight-color: transparent;
         }
 
         .login-container {
-            width: 100%;
-            max-width: 480px; /* 모바일 한손 조작 최적화 너비 */
-            padding: 20px 15px;
-            box-sizing: border-box;
+            width: 94%;
+            max-width: 420px; /* 조금 더 슬림하게 조정 */
+            padding: 15px 12px;
             text-align: center;
-            background: linear-gradient(rgba(11, 14, 20, 0.75), rgba(11, 14, 20, 0.9)), 
+            /* 배경 이미지 처리 방식 개선하여 터치 간섭 차단 */
+            background: linear-gradient(rgba(11, 14, 20, 0.82), rgba(11, 14, 20, 0.95)), 
                         url('main.png') no-repeat center center; 
             background-size: cover;
             border: 3px solid #f2a900;
             border-radius: 12px;
-            margin: 10px;
             box-shadow: 0 0 20px rgba(242, 169, 0, 0.3);
+            position: relative;
+            z-index: 1;
         }
 
         .main-title {
-            font-size: 2.4rem; /* 모바일 화면에 맞춰 타이틀 축소 */
+            font-size: 2.0rem; /* 아이폰 미니를 위해 타이틀 크기 축소 */
             color: #f2a900;
-            text-shadow: 3px 3px 0px #4a154b, 5px 5px 0px #000;
-            margin: 5px 0;
+            text-shadow: 2px 2px 0px #4a154b, 4px 4px 0px #000;
+            margin: 2px 0;
             letter-spacing: 1px;
         }
 
         .sub-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.0rem;
+            font-size: 0.85rem;
             color: #00bcd4;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             text-shadow: 1px 1px 0px #000;
         }
 
-        /* 📱 모바일 세로 배치 최적화 */
         .team-selection {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
 
+        /* 클릭 활성화 및 가시성 직관화 */
         .team-card {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(20, 24, 33, 0.9);
             border: 2px solid #333;
             border-radius: 10px;
-            padding: 12px;
+            padding: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-align: left;
             transition: all 0.2s ease;
+            position: relative;
+            z-index: 10; /* 터치 우선순위 상향 */
         }
 
         .team-card.team-a.selected {
             border-color: #ff6b35;
-            background: rgba(255, 107, 53, 0.15);
-            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+            background: rgba(255, 107, 53, 0.2);
+            box-shadow: 0 0 12px rgba(255, 107, 53, 0.4);
         }
 
         .team-card.team-b.selected {
             border-color: #0077b6;
-            background: rgba(0, 119, 182, 0.15);
-            box-shadow: 0 0 10px rgba(0, 119, 182, 0.3);
+            background: rgba(0, 119, 182, 0.2);
+            box-shadow: 0 0 12px rgba(0, 119, 182, 0.4);
         }
 
         .team-logo {
-            width: 44px;
-            height: 44px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: bold;
             flex-shrink: 0;
         }
@@ -101,50 +108,58 @@
 
         .team-info-wrap {
             flex-grow: 1;
+            position: relative;
+            z-index: 15;
         }
 
         .team-name-text {
-            font-size: 1.1rem;
-            margin-bottom: 6px;
+            font-size: 1.0rem;
+            margin-bottom: 4px;
         }
 
+        /* 모바일 터치 미스 방지 및 네이티브 가동성 확보 */
         .member-select {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             font-family: 'Black Han Sans', sans-serif;
             font-size: 0.95rem;
-            background-color: #222;
+            background-color: #1a1d24;
             color: #fff;
-            border: 1px solid #444;
+            border: 2px solid #444;
             border-radius: 6px;
+            position: relative;
+            z-index: 20;
+            outline: none;
         }
+        .team-card.team-a.selected .member-select { border-color: #ff6b35; }
+        .team-card.team-b.selected .member-select { border-color: #0077b6; }
 
         .mission-section {
             display: none;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             border: 2px solid #00bcd4;
             border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 20px;
+            padding: 10px;
+            margin-bottom: 12px;
             text-align: left;
         }
         .mission-section.active { display: block; }
         
         .mission-header {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: #00bcd4;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        /* 📱 모바일 스크롤 리스트 최적화 (1열 배치로 가독성 확보) */
+        /* 높이가 좁은 폰(아이폰 미니)에 맞게 최대 높이 축소 및 터치 최적화 */
         .mission-grid {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            max-height: 180px;
+            gap: 5px;
+            max-height: 130px; 
             overflow-y: auto;
             padding-right: 2px;
         }
@@ -152,9 +167,9 @@
         .mission-item {
             background: #1e1e1e;
             border: 1px solid #333;
-            padding: 10px;
+            padding: 8px 10px;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             user-select: none;
             -webkit-user-select: none;
@@ -167,20 +182,23 @@
 
         .start-btn {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             background: linear-gradient(#f2a900, #ff8c00);
             color: #000;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             box-shadow: 0 4px 0px #b37d00;
+            position: relative;
+            z-index: 10;
         }
         .start-btn:disabled {
             background: #444;
             color: #777;
             box-shadow: none;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -191,11 +209,11 @@
     <div class="sub-title">LET'S DRIVE SALES!</div>
 
     <div class="team-selection">
-        <div class="team-card team-a" onclick="selectTeam('A')">
+        <div class="team-card team-a" id="card-a" onclick="selectTeam('A')">
             <div class="team-logo">K</div>
             <div class="team-info-wrap">
                 <div class="team-name-text">253 삼구삼진스</div>
-                <select class="member-select" id="members-a" onclick="event.stopPropagation()" onchange="checkReady()">
+                <select class="member-select" id="members-a" onchange="checkReady()">
                     <option value="">선수 선택</option>
                     <option value="성경">성경</option>
                     <option value="윤정">윤정</option>
@@ -206,11 +224,11 @@
             </div>
         </div>
 
-        <div class="team-card team-b" onclick="selectTeam('B')">
+        <div class="team-card team-b" id="card-b" onclick="selectTeam('B')">
             <div class="team-logo">L</div>
             <div class="team-info-wrap">
                 <div class="team-name-text">코스 라이언즈</div>
-                <select class="member-select" id="members-b" onclick="event.stopPropagation()" onchange="checkReady()">
+                <select class="member-select" id="members-b" onchange="checkReady()">
                     <option value="">선수 선택</option>
                     <option value="주하">주하</option>
                     <option value="유진">유진</option>
@@ -224,8 +242,8 @@
 
     <div class="mission-section" id="mission-section">
         <div class="mission-header">
-            <span id="mission-instruction-title" style="font-weight:bold; color:#ff4d4d; font-size:0.85rem;">🔥 상대 미션 던지기</span>
-            <span id="mission-count" style="font-size:0.85rem;">(0 / 5)</span>
+            <span id="mission-instruction-title" style="font-weight:bold; color:#ff4d4d;">🔥 상대 미션 던지기</span>
+            <span id="mission-count">(0 / 5)</span>
         </div>
         <div class="mission-grid" id="mission-grid"></div>
     </div>
@@ -244,11 +262,21 @@
     const missionPool = [
         "아우터 판매 1건 달성", "니트 + 바지 세트 판매", "객단가 20만원 이상 달성",
         "신상품 피팅 유도 3회", "결제 시 멤버십 신규 가입 유도", "액세서리 추가 판매 성공",
-        "단일 영수증 3PCS 이상 판매", "중요 존(Zone) 마네킹 디스플레이 정비", "린넨 셔츠 판매 1건",
-        "오픈 직후 첫 마수걸이 판매", "고객 칭찬 카드 피드백 받기", "마감 시간 전 라스트 스퍼트 판매",
+        "단일 영수증 3PCS 이상 판매", "중요 존 마네킹 디스플레이 정비", "린넨 셔츠 판매 1건",
+        "오픈 직후 첫 마수걸이 판매", "고객 칭찬 카드 피드백 받기", "마감 전 라스트 스퍼트 판매",
         "세일/프로모션 상품 연계 판매", "선물용 포장 판매 성공", "신발 또는 가방 카테고리 판매",
-        "크로스 셀링 세트 코디 제안 판매"
+        "크로스 셀링 세트 코디 판매"
     ];
+
+    // select 클릭 시 상위 team-card 클릭 이벤트 버블링으로 인한 혼선 방지 안정화
+    document.getElementById('members-a').addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectTeam('A');
+    });
+    document.getElementById('members-b').addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectTeam('B');
+    });
 
     function initMissions() {
         const grid = document.getElementById('mission-grid');
@@ -257,25 +285,26 @@
             const div = document.createElement('div');
             div.className = "mission-item";
             div.innerText = `${idx+1}. ${m}`;
-            div.onclick = () => { if(!isMissionAlreadySet) toggleMission(m, div); };
+            div.onclick = (e) => { 
+                e.stopPropagation();
+                if(!isMissionAlreadySet) toggleMission(m, div); 
+            };
             grid.appendChild(div);
         });
     }
 
     function selectTeam(team) {
         selectedTeam = team;
-        document.querySelector('.team-card.team-a').classList.remove('selected');
-        document.querySelector('.team-card.team-b').classList.remove('selected');
+        document.getElementById('card-a').classList.remove('selected');
+        document.getElementById('card-b').classList.remove('selected');
         
         if(team === 'A') {
-            document.querySelector('.team-card.team-a').classList.add('selected');
+            document.getElementById('card-a').classList.add('selected');
             document.getElementById('members-a').disabled = false;
-            document.getElementById('members-b').disabled = true;
             document.getElementById('members-b').value = "";
         } else {
-            document.querySelector('.team-card.team-b').classList.add('selected');
+            document.getElementById('card-b').classList.add('selected');
             document.getElementById('members-b').disabled = false;
-            document.getElementById('members-a').disabled = true;
             document.getElementById('members-a').value = "";
         }
 
@@ -291,6 +320,85 @@
 
             if (data && data.list && data.list.length === 5) {
                 isMissionAlreadySet = true;
-                titleText.innerText = `✅ [${targetTeamName}] 미션 지정 완료 상태`;
+                titleText.innerText = `✅ [${targetTeamName}] 미션 투구 완료`;
                 document.getElementById('mission-grid').style.opacity = "0.4";
-                document.getElementById('mission-count').
+                document.getElementById('mission-count').innerText = "";
+            } else {
+                isMissionAlreadySet = false;
+                titleText.innerText = `🎯 [${targetTeamName}] 미션 5개 지목`;
+                document.getElementById('mission-count').innerText = `(${selectedMissions.length} / 5)`;
+                document.getElementById('mission-grid').style.opacity = "1.0";
+                initMissions();
+            }
+            checkReady();
+        }).catch(err => {
+            // 오프라인 상태 대비 활성화 보장
+            document.getElementById('mission-section').classList.add('active');
+            checkReady();
+        });
+    }
+
+    function toggleMission(mission, element) {
+        const idx = selectedMissions.indexOf(mission);
+        if(idx > -1) {
+            selectedMissions.splice(idx, 1);
+            element.classList.remove('selected');
+        } else {
+            if(selectedMissions.length >= 5) {
+                alert("미션은 최대 5개까지만 선택할 수 있습니다!");
+                return;
+            }
+            selectedMissions.push(mission);
+            element.classList.add('selected');
+        }
+        document.getElementById('mission-count').innerText = `(${selectedMissions.length} / 5)`;
+        checkReady();
+    }
+
+    function checkReady() {
+        const btn = document.getElementById('start-btn');
+        const nameA = document.getElementById('members-a').value;
+        const nameB = document.getElementById('members-b').value;
+        const hasPlayer = (selectedTeam === 'A' && nameA) || (selectedTeam === 'B' && nameB);
+
+        if (hasPlayer) {
+            if (isMissionAlreadySet) {
+                btn.disabled = false;
+                btn.innerText = `⚾ 경기장 입장하기`;
+            } else if (selectedMissions.length === 5) {
+                btn.disabled = false;
+                btn.innerText = `⚾ 미션 투구 완료 및 입장`;
+            } else {
+                btn.disabled = true;
+                btn.innerText = `상대 미션 5개를 채워주세요`;
+            }
+        } else {
+            btn.disabled = true;
+            btn.innerText = "팀과 선수를 선택하세요";
+        }
+    }
+
+    function enterGame() {
+        const name = selectedTeam === 'A' ? document.getElementById('members-a').value : document.getElementById('members-b').value;
+        const teamName = selectedTeam === 'A' ? "253 삼구삼진스" : "코스 라이언즈";
+        
+        localStorage.setItem('baseball_team', selectedTeam);
+        localStorage.setItem('baseball_team_name', teamName);
+        localStorage.setItem('baseball_player', name);
+
+        const targetTeam = selectedTeam === 'A' ? 'B' : 'A';
+
+        if (!isMissionAlreadySet) {
+            fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${targetTeam}.json`, {
+                method: 'PUT',
+                body: JSON.stringify({ byPlayer: name, list: selectedMissions })
+            }).then(() => { window.location.href = 'game.html'; });
+        } else {
+            window.location.href = 'game.html';
+        }
+    }
+
+    initMissions();
+</script>
+</body>
+</html>
