@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>253 BASEBALL - SCOREBOARD</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Black+Han+Sans&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght=700&family=Black+Han+Sans&display=swap');
 
         body {
             margin: 0;
@@ -36,30 +36,33 @@
             font-size: 0.95rem;
         }
 
-        /* 🏟️ 야구장 이미지 전광판 및 주자 애니메이션 컨테이너 */
+        /* 🏟️ 모바일에서 배경 이미지가 절대 깨지지 않도록 가로세로 비율 고정 */
         .stadium-container {
             width: 100%;
             max-width: 450px;
-            height: 260px; /* 갤럭시 화면 비율에 맞춘 최적 높이 */
-            background: url('image.png') no-repeat center center;
-            background-size: cover;
+            aspect-ratio: 3 / 2; /* 야구장 이미지 비율 고정 */
+            background-image: url('stadium.png'); /* 파일명을 stadium.png로 변경 */
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 100% 100%; /* 이미지가 구역에 꽉 차도록 설정 */
             border: 3px solid #00bcd4;
             border-radius: 12px;
             position: relative;
             margin-bottom: 12px;
             overflow: hidden;
             box-shadow: 0 0 15px rgba(0, 188, 212, 0.4);
+            box-sizing: border-box;
         }
 
-        /* 경기장 내부 베이스 위치 가상 좌표 설정 (image.png 투시도 맞춤) */
+        /* stadium.png 원근감에 맞춘 주자 애니메이션 좌표 설정 */
         .base-runner {
             position: absolute;
             font-size: 1.4rem;
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); /* 주자가 부드럽게 뛰어나가는 애니메이션 */
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 99;
             transform: translate(-50%, -50%);
             filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.8));
-            display: none; /* 주자가 없을 땐 숨김 */
+            display: none;
         }
 
         .scoreboard {
@@ -162,9 +165,7 @@
         <button style="background:#ff4d4d; border:none; color:white; padding:5px 10px; border-radius:6px; font-size:0.8rem;" onclick="location.href='index.html'">퇴장</button>
     </div>
 
-    <!-- 🏟️ 변경된 레이아웃: 야구장 실시간 맵이 상단 배치됩니다 -->
     <div class="stadium-container" id="stadium-map">
-        <!-- 움직이는 주자 레이어 (🔴 이모지) -->
         <div class="base-runner" id="runner-piece">🔴</div>
     </div>
 
@@ -172,7 +173,7 @@
         <div class="board-header" id="today-board-title">COS 253 BOARD</div>
         <div class="score-table">
             <div class="team-row" style="border-left: 5px solid #ff6b35;">
-                <div class="board-team-name">🔥 삼구삼진스</div>
+                <div class="board-team-name">🔥 253 삼구삼진스</div>
                 <div class="board-score" id="score-A" style="color:#ff6b35;">0</div>
             </div>
             <div class="team-row" style="border-left: 5px solid #0077b6;">
@@ -226,26 +227,24 @@
     let serverMissions = [];
     let clearedMissions = [];
 
-    // 🎯 image.png 구도에 완벽하게 매칭한 각 베이스별 XY 백분율 좌표 (갤럭시 화면 대응)
+    // 🎯 stadium.png의 원근감에 최적화하여 조정한 베이스별 XY 좌표 비율
     const baseCoordinates = {
-        0: { top: '85%', left: '50%' },   // 홈 플레이트 (타석)
-        1: { top: '68%', left: '72%' },   // 1루 위치
-        2: { top: '55%', left: '50%' },   // 2루 위치
-        3: { top: '68%', left: '28%' }    // 3루 위치
+        0: { top: '88%', left: '50%' },   // 홈 플레이트 (타석)
+        1: { top: '69%', left: '71%' },   // 1루
+        2: { top: '56%', left: '50%' },   // 2루
+        3: { top: '69%', left: '29%' }    // 3루
     };
 
     function updateRunnerPosition(clearCount) {
         const runner = document.getElementById('runner-piece');
         
-        // 미션을 하나도 안 깼으면 주자가 경기장에 없음
         if (clearCount === 0 || clearCount > 4) {
             runner.style.display = 'none';
             return;
         }
 
-        // 현재 깬 개수에 맞게 루상에 주자 위치 이동 (1개=1루, 2개=2루, 3개=3루, 4개=홈런 직전 루상대기)
         let currentBase = clearCount;
-        if(currentBase > 3) currentBase = 3; // 4번째 미션 격파 시 홈런이므로 3루에서 대기 타격 유도
+        if(currentBase > 3) currentBase = 3; // 4번째는 홈런이므로 3루 대기
 
         const coords = baseCoordinates[currentBase];
         runner.style.display = 'block';
@@ -254,13 +253,11 @@
     }
 
     function syncGameData() {
-        // [점수 동기화 및 리셋 대응]
         fetch(`${FIREBASE_URL}daily_scores/${todayStr}.json`).then(res => res.json()).then(data => {
             document.getElementById('score-A').innerText = (data && data.A !== undefined) ? data.A : 0;
             document.getElementById('score-B').innerText = (data && data.B !== undefined) ? data.B : 0;
         });
 
-        // [미션 정보 동기화 및 리셋 대응]
         fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${myTeam}.json`).then(res => res.json()).then(data => {
             const listContainer = document.getElementById('game-mission-list');
             const titleEl = document.getElementById('dynamic-action-title');
@@ -268,20 +265,18 @@
             if (!data || !data.list || data.list.length === 0) {
                 titleEl.innerText = "⏳ 상대팀 미션 투구 대기 중...";
                 listContainer.innerHTML = "";
-                updateRunnerPosition(0); // 리셋 시 주자 아웃 처리
+                updateRunnerPosition(0);
                 return;
             }
 
             titleEl.innerText = `💣 상대방이 지목한 타격 미션`;
             serverMissions = data.list;
             
-            // 본인 팀원의 미션 클리어 현황 조회
             fetch(`${FIREBASE_URL}daily_cleared/${todayStr}/${myTeam}/${myPlayer}.json`).then(res => res.json()).then(cData => {
                 clearedMissions = cData ? Object.values(cData) : [];
                 listContainer.innerHTML = "";
                 const currentClearCount = clearedMissions.length;
 
-                // 🏃 주자 위치 업데이트 실시간 연동 (리셋 시 즉시 0개로 돌아감)
                 updateRunnerPosition(currentClearCount);
 
                 serverMissions.forEach((mission) => {
@@ -308,7 +303,6 @@
             });
         });
 
-        // 과거 매치 히스토리
         fetch(`${FIREBASE_URL}daily_scores.json`).then(res => res.json()).then(allScores => {
             const tbody = document.getElementById('history-tbody');
             if(!allScores) {
@@ -337,7 +331,6 @@
             });
         });
 
-        // 라이브 로그 시스템
         fetch(`${FIREBASE_URL}logs.json?orderBy="$key"&limitToLast=5`).then(res => res.json()).then(data => {
             const feed = document.getElementById('log-feed');
             if(!data) { feed.innerHTML = "<div style='color:#666; font-size:0.8rem;'>전광판 실시간 대기 중...</div>"; return; }
@@ -364,7 +357,6 @@
 
         if(!confirm(`미션을 달성하셨습니까?`)) return;
 
-        // 주자 먼저 달리는 연출을 위해 선제 좌표 강제 이동 후 DB 업데이트 진행
         const runner = document.getElementById('runner-piece');
         runner.style.display = 'block';
         
