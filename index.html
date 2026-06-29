@@ -26,7 +26,6 @@
             padding: 30px 20px;
             box-sizing: border-box;
             text-align: center;
-            /* 폴더에 저장한 main.png 배경을 확실하게 불러옵니다 */
             background: linear-gradient(rgba(11, 14, 20, 0.7), rgba(11, 14, 20, 0.85)), 
                         url('main.png') no-repeat center center; 
             background-size: cover;
@@ -198,7 +197,6 @@
         </div>
     </div>
 
-    <!-- 🎯 상대팀 공격 미션 선정 칸 -->
     <div class="mission-section" id="mission-section">
         <div class="mission-header">
             <span id="mission-instruction-title" style="font-weight:bold; color:#ff4d4d;">🔥 상대팀에게 던질 미션 정하기</span>
@@ -214,6 +212,10 @@
     const FIREBASE_URL = "https://cos253baseball-default-rtdb.asia-southeast1.firebasedatabase.app/"; 
     let selectedTeam = null;
     let selectedMissions = [];
+    let isMissionAlreadySet = false; // 상대 팀 미션이 이미 출근자에 의해 던져졌는지 여부
+
+    // 오늘 날짜 구하기 (YYYY-MM-DD 형식)
+    const todayStr = new Date().toISOString().split('T')[0];
 
     const missionPool = [
         "아우터 판매 1건 달성", "니트 + 바지 세트 판매", "객단가 20만원 이상 달성",
@@ -231,7 +233,7 @@
             const div = document.createElement('div');
             div.className = "mission-item";
             div.innerText = `${idx+1}. ${m}`;
-            div.onclick = () => toggleMission(m, div);
+            div.onclick = () => { if(!isMissionAlreadySet) toggleMission(m, div); };
             grid.appendChild(div);
         });
     }
@@ -241,23 +243,45 @@
         document.querySelector('.team-card.team-a').classList.remove('selected');
         document.querySelector('.team-card.team-b').classList.remove('selected');
         
-        const titleText = document.getElementById('mission-instruction-title');
-
         if(team === 'A') {
             document.querySelector('.team-card.team-a').classList.add('selected');
             document.getElementById('members-a').disabled = false;
             document.getElementById('members-b').disabled = true;
             document.getElementById('members-b').value = "";
-            titleText.innerText = "🎯 [코스 라이언즈]가 수행해야 할 공격 미션 5개 선택";
         } else {
             document.querySelector('.team-card.team-b').classList.add('selected');
             document.getElementById('members-b').disabled = false;
             document.getElementById('members-a').disabled = true;
             document.getElementById('members-a').value = "";
-            titleText.innerText = "🎯 [253 삼구삼진스]가 수행해야 할 공격 미션 5개 선택";
         }
-        document.getElementById('mission-section').classList.add('active');
-        checkReady();
+
+        // 💡 핵심 검증: 내가 고른 미션을 받아야 하는 대상 팀(상대 팀)에 이미 미션이 세팅되어 있는지 확인
+        const targetTeam = selectedTeam === 'A' ? 'B' : 'A';
+        const targetTeamName = selectedTeam === 'A' ? '코스 라이언즈' : '253 삼구삼진스';
+
+        fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${targetTeam}.json`)
+        .then(res => res.json())
+        .then(data => {
+            const titleText = document.getElementById('mission-instruction-title');
+            const section = document.getElementById('mission-section');
+            section.classList.add('active');
+
+            if (data && data.list && data.list.length === 5) {
+                // 이미 먼저 출근한 우리 팀원이 세팅을 완료한 상태인 경우
+                isMissionAlreadySet = true;
+                titleText.innerText = `✅ 우리 팀 앞 출근자가 이미 [${targetTeamName}]의 미션을 투구했습니다.`;
+                document.getElementById('mission-grid').style.opacity = "0.4";
+                document.getElementById('mission-count').innerText = "(지정 완료)";
+            } else {
+                // 내가 최초 출근자여서 미션을 새로 정해야 하는 경우
+                isMissionAlreadySet = false;
+                titleText.innerText = `🎯 [${targetTeamName}]가 수행해야 할 공격 미션 5개 선택`;
+                document.getElementById('mission-grid').style.opacity = "1.0";
+                document.getElementById('mission-count').innerText = `(${selectedMissions.length} / 5)`;
+                initMissions(); // 다시 그리기
+            }
+            checkReady();
+        });
     }
 
     function toggleMission(mission, element) {
@@ -283,12 +307,18 @@
         const nameB = document.getElementById('members-b').value;
         const hasPlayer = (selectedTeam === 'A' && nameA) || (selectedTeam === 'B' && nameB);
 
-        if (hasPlayer && selectedMissions.length === 5) {
-            btn.disabled = false;
-            btn.innerText = `⚾ 미션 투구 완료! 경기장 입장하기`;
-        } else if (hasPlayer) {
-            btn.disabled = true;
-            btn.innerText = `상대방에게 던질 미션을 5개 채워주세요`;
+        if (hasPlayer) {
+            if (isMissionAlreadySet) {
+                // 이미 미션이 있다면 투구할 필요 없이 바로 입장 가능
+                btn.disabled = false;
+                btn.innerText = `⚾ 미션 완료 상태! 경기장 입장하기`;
+            } else if (selectedMissions.length === 5) {
+                btn.disabled = false;
+                btn.innerText = `⚾ 미션 투구 완료! 경기장 입장하기`;
+            } else {
+                btn.disabled = true;
+                btn.innerText = `상대방에게 던질 미션을 5개 채워주세요`;
+            }
         } else {
             btn.disabled = true;
             btn.innerText = "팀과 선수를 선택하세요";
@@ -303,19 +333,23 @@
         localStorage.setItem('baseball_team_name', teamName);
         localStorage.setItem('baseball_player', name);
 
-        // 💡 핵심 로직: 내가 고른 미션을 내가 아닌 "상대 팀 타겟 미션"으로 저장하여 파이어베이스에 보냅니다.
         const targetTeam = selectedTeam === 'A' ? 'B' : 'A';
 
-        // 서버에 이 미션 데이터를 바로 등록하여 상대방 창에 연동시킵니다.
-        fetch(`${FIREBASE_URL}missions/${targetTeam}.json`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                byPlayer: name,
-                list: selectedMissions
-            })
-        }).then(() => {
+        if (!isMissionAlreadySet) {
+            // 내가 최초 출근자라면 직접 고른 미션을 서버의 '오늘 날짜 디렉토리' 안에 저장
+            fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${targetTeam}.json`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    byPlayer: name,
+                    list: selectedMissions
+                })
+            }).then(() => {
+                window.location.href = 'game.html';
+            });
+        } else {
+            // 이미 미션이 있으면 그냥 게임 화면으로 직행
             window.location.href = 'game.html';
-        });
+        }
     }
 
     document.getElementById('members-a').disabled = true;

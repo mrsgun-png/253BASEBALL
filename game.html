@@ -10,7 +10,6 @@
         body {
             margin: 0;
             padding: 0;
-            /* 폴더에 저장한 stadium.png 대형 전광판 배경 적용 */
             background: linear-gradient(rgba(11, 14, 20, 0.35), rgba(11, 14, 20, 0.75)), 
                         url('stadium.png') no-repeat center center fixed;
             background-size: cover;
@@ -71,6 +70,7 @@
             border-radius: 12px;
             padding: 20px;
             box-sizing: border-box;
+            margin-bottom: 20px;
         }
         .action-title { font-size: 1.3rem; color: #ff4d4d; margin-bottom: 15px; text-align: center; }
 
@@ -97,16 +97,40 @@
             pointer-events: none;
         }
 
+        /* 📊 일별 집계 테이블 디자인 */
+        .history-board {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(10, 15, 25, 0.9);
+            border: 2px solid #f2a900;
+            border-radius: 12px;
+            padding: 15px;
+            box-sizing: border-box;
+            margin-top: 15px;
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .history-table th, .history-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            font-size: 0.95rem;
+        }
+        .history-table th { background-color: rgba(242, 169, 0, 0.2); color: #f2a900; }
+
         .log-container {
             width: 100%;
             max-width: 800px;
-            margin-top: 15px;
             background: rgba(0, 0, 0, 0.9);
             border: 1px solid #333;
             border-radius: 8px;
             padding: 12px;
-            max-height: 140px;
+            max-height: 120px;
             overflow-y: auto;
+            margin-top: 15px;
         }
         .log-item { padding: 5px 0; font-size: 0.9rem; border-bottom: 1px dashed #222; text-align: left; }
     </style>
@@ -122,7 +146,7 @@
     </div>
 
     <div class="scoreboard">
-        <div class="board-header">COS 253 BASEBALL REALTIME BOARD</div>
+        <div class="board-header" id="today-board-title">COS 253 BASEBALL REALTIME BOARD</div>
         <div class="score-table">
             <div class="team-row" style="border-left: 6px solid #ff6b35;">
                 <div class="board-team-name">🔥 253 삼구삼진스</div>
@@ -140,6 +164,23 @@
         <div class="mission-list" id="game-mission-list"></div>
     </div>
 
+    <div class="history-board">
+        <div style="color: #f2a900; font-size: 1.1rem; text-align: center;">📅 데일리 매치 기록 집계판 (날마다 자동 리셋)</div>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>날짜</th>
+                    <th style="color:#ff6b35;">삼구삼진스</th>
+                    <th style="color:#0077b6;">코스 라이언즈</th>
+                    <th>우승 팀</th>
+                </tr>
+            </thead>
+            <tbody id="history-tbody">
+                <tr><td colspan="4" style="color:#777;">불러오는 중...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
     <div class="log-container">
         <div id="log-feed"></div>
     </div>
@@ -151,6 +192,10 @@
     const myTeamName = localStorage.getItem('baseball_team_name');
     const myPlayer = localStorage.getItem('baseball_player');
 
+    // 오늘 날짜 문자열
+    const todayStr = new Date().toISOString().split('T')[0];
+    document.getElementById('today-board-title').innerText = `COS 253 BASEBALL BOARD [${todayStr}]`;
+
     if (!myTeam || !myPlayer) window.location.href = 'index.html';
 
     document.getElementById('user-team-display').innerText = myTeamName;
@@ -159,23 +204,20 @@
     let serverMissions = [];
     let clearedMissions = [];
 
-    // 실시간으로 점수판 및 상대가 던진 미션을 리프레시 동기화합니다.
     function syncGameData() {
-        // 1. 전광판 점수 가져오기
-        fetch(`${FIREBASE_URL}scores.json`).then(res => res.json()).then(data => {
-            if(data) {
-                document.getElementById('score-A').innerText = data.A !== undefined ? data.A : 0;
-                document.getElementById('score-B').innerText = data.B !== undefined ? data.B : 0;
-            }
+        // 1. 💡 오늘 날짜 디렉토리에서 점수 가져오기 (매일 0점으로 자동 리셋 효과)
+        fetch(`${FIREBASE_URL}daily_scores/${todayStr}.json`).then(res => res.json()).then(data => {
+            document.getElementById('score-A').innerText = (data && data.A !== undefined) ? data.A : 0;
+            document.getElementById('score-B').innerText = (data && data.B !== undefined) ? data.B : 0;
         });
 
-        // 2. 💡 상대방이 나한테 던진 미션 리스트 실시간 조회
-        fetch(`${FIREBASE_URL}missions/${myTeam}.json`).then(res => res.json()).then(data => {
+        // 2. 오늘 날짜의 미션 리스트 실시간 조회
+        fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${myTeam}.json`).then(res => res.json()).then(data => {
             const listContainer = document.getElementById('game-mission-list');
             const titleEl = document.getElementById('dynamic-action-title');
 
             if (!data || !data.list || data.list.length === 0) {
-                titleEl.innerText = "⏳ 상대 팀이 미션을 선택할 때까지 대기 중입니다...";
+                titleEl.innerText = "⏳ 상대 팀 첫 출근자가 미션을 선택할 때까지 대기 중입니다...";
                 listContainer.innerHTML = "";
                 return;
             }
@@ -183,12 +225,11 @@
             titleEl.innerText = `💣 상대팀이 던진 미션 리스트 (격파 시 누적 점수 증가!)`;
             serverMissions = data.list;
             
-            // 이미 격파해서 DB에 저장되어 있던 미션 상태 체크
-            fetch(`${FIREBASE_URL}cleared_missions/${myTeam}/${myPlayer}.json`).then(res => res.json()).then(cData => {
+            // 오늘 내가 클리어한 미션 내역 로드
+            fetch(`${FIREBASE_URL}daily_cleared/${todayStr}/${myTeam}/${myPlayer}.json`).then(res => res.json()).then(cData => {
                 clearedMissions = cData ? Object.values(cData) : [];
                 
                 listContainer.innerHTML = "";
-                // 현재 내가 클리어한 개수에 기반해서 다음 보상 안내
                 const currentClearCount = clearedMissions.length;
 
                 serverMissions.forEach((mission) => {
@@ -200,7 +241,6 @@
                         btn.classList.add('cleared');
                         btn.innerHTML = `<span>✅ 완료: ${mission}</span>`;
                     } else {
-                        // 💡 미션을 수행한 누적 개수가 늘어날 때마다 점수가 늘어나는 동적 가이드 매핑
                         let nextScoreTip = "";
                         if(currentClearCount === 0) nextScoreTip = "1루타 (+1)";
                         else if(currentClearCount === 1) nextScoreTip = "2루타 (+2)";
@@ -216,7 +256,37 @@
             });
         });
 
-        // 3. 중계 리포트 피드 갱신
+        // 3. 📅 전체 일별 집계판 목록 바인딩
+        fetch(`${FIREBASE_URL}daily_scores.json`).then(res => res.json()).then(allScores => {
+            const tbody = document.getElementById('history-tbody');
+            if(!allScores) {
+                tbody.innerHTML = `<tr><td colspan="4" style="color:#777;">아직 진행된 매치 기록이 없습니다.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = "";
+            // 날짜 최신순 정렬
+            Object.keys(allScores).sort().reverse().forEach(dateKey => {
+                const dayData = allScores[dateKey];
+                const scoreA = dayData.A || 0;
+                const scoreB = dayData.B || 0;
+                
+                let winnerText = "무승부 🤝";
+                if(scoreA > scoreB) winnerText = "🏆 삼구삼진스";
+                else if(scoreB > scoreA) winnerText = "🏆 코스 라이언즈";
+
+                const tr = document.createElement('tr');
+                if(dateKey === todayStr) tr.style.backgroundColor = "rgba(0, 188, 212, 0.15)"; // 오늘 날짜 하이라이트
+                tr.innerHTML = `
+                    <td>${dateKey} ${dateKey === todayStr ? '(오늘)' : ''}</td>
+                    <td style="color:#ff6b35; font-weight:bold;">${scoreA} 점</td>
+                    <td style="color:#0077b6; font-weight:bold;">${scoreB} 점</td>
+                    <td style="color:#f2a900;">${winnerText}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+
+        // 4. 중계 리포트 피드 갱신
         fetch(`${FIREBASE_URL}logs.json?orderBy="$key"&limitToLast=10`).then(res => res.json()).then(data => {
             const feed = document.getElementById('log-feed');
             if(!data) return;
@@ -225,7 +295,7 @@
                 const log = data[key];
                 const div = document.createElement('div');
                 div.className = "log-item";
-                div.innerHTML = `⏱️ [${log.time}] <b>${log.teamName}</b> ${log.player} 선수 ➡️ ${log.hitText}`;
+                div.innerHTML = `⏱️ [${log.time}] <b>${log.teamName}</b> ${log.player} ➡️ ${log.hitText}`;
                 feed.appendChild(div);
             });
         });
@@ -235,7 +305,6 @@
         let hitText = "";
         let points = 0;
 
-        // 누적 격파 성공 횟수에 따라 차례대로 가중치 상승 구현!
         if (nextStep === 1) { hitText = "1구째 미션 격파! 1루타 안타!"; points = 1; }
         else if (nextStep === 2) { hitText = "2구째 미션 격파! 우중간 가르는 2루타!!"; points = 2; }
         else if (nextStep === 3) { hitText = "3구째 미션 격파! 펜스 대형 3루타!!!"; points = 3; }
@@ -244,17 +313,20 @@
 
         if(!confirm(`[${missionName}] 미션을 달성하여 타격을 날릴까요?`)) return;
 
-        // 파이어베이스에 클리어 현황 저장
-        fetch(`${FIREBASE_URL}cleared_missions/${myTeam}/${myPlayer}.json`, {
+        // 오늘 날짜 경로에 클리어 내역 등록
+        fetch(`${FIREBASE_URL}daily_cleared/${todayStr}/${myTeam}/${myPlayer}.json`, {
             method: 'POST',
             body: JSON.stringify(missionName)
         })
         .then(() => {
-            // 현재 내 팀 스코어 리딩 후 가산
-            const currentScore = parseInt(document.getElementById(`score-${myTeam}`).innerText) || 0;
-            const newScore = currentScore + points;
+            // 오늘 날짜의 기존 팀 스코어 가져오기
+            return fetch(`${FIREBASE_URL}daily_scores/${todayStr}/${myTeam}.json`).then(res => res.json());
+        })
+        .then((currentScore) => {
+            const scoreNum = currentScore ? parseInt(currentScore) : 0;
+            const newScore = scoreNum + points;
 
-            return fetch(`${FIREBASE_URL}scores/${myTeam}.json`, {
+            return fetch(`${FIREBASE_URL}daily_scores/${todayStr}/${myTeam}.json`, {
                 method: 'PUT',
                 body: JSON.stringify(newScore)
             });
@@ -281,7 +353,7 @@
         });
     }
 
-    setInterval(syncGameData, 2000);
+    setInterval(syncGameData, 3000);
     window.onload = syncGameData;
 </script>
 </body>
