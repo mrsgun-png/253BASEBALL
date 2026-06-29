@@ -1,0 +1,334 @@
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>253 BASEBALL - SCOREBOARD</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Black+Han+Sans&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0b0e14;
+            color: #ffffff;
+            font-family: 'Black Han Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        /* 상단 네비게이션/유저 정보 바 */
+        .user-bar {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+        .logout-btn {
+            background: #ff4d4d;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Black Han Sans', sans-serif;
+        }
+
+        /* 전광판 대형 컨테이너 (보내주신 전광판 스타일 모티브) */
+        .scoreboard {
+            width: 100%;
+            max-width: 700px;
+            background: #11151c;
+            border: 4px solid #f2a900;
+            border-radius: 12px;
+            padding: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(242, 169, 0, 0.15);
+            margin-bottom: 20px;
+        }
+
+        /* 전광판 타이틀 */
+        .board-header {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            color: #00bcd4;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            border-bottom: 2px dashed #333;
+            padding-bottom: 8px;
+        }
+
+        /* 팀별 스코어 매칭 디스플레이 */
+        .score-table {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .team-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.3);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 6px solid #fff;
+        }
+        .team-row.team-a-row { border-color: #ff6b35; }
+        .team-row.team-b-row { border-color: #0077b6; }
+
+        .board-team-name {
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+        }
+        .board-score {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            color: #f2a900;
+            text-shadow: 0 0 10px rgba(242,169,0,0.5);
+        }
+
+        /* 액션 컨트롤 보드 (타석 버튼 구역) */
+        .action-board {
+            width: 100%;
+            max-width: 700px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid #222;
+            border-radius: 12px;
+            padding: 20px 15px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .action-title {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 15px;
+            color: #a0aec0;
+        }
+
+        /* 야구 타격 버튼 그리드 */
+        .hit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .hit-btn {
+            padding: 18px 10px;
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #fff;
+            box-shadow: 0 4px 0px rgba(0,0,0,0.4);
+            transition: all 0.1s ease;
+        }
+        .hit-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0px rgba(0,0,0,0.4);
+        }
+        
+        /* 버튼별 고유 색상 */
+        .btn-single { background: linear-gradient(#4abc96, #2d9a74); } /* 1루타 */
+        .btn-double { background: linear-gradient(#3182ce, #2b6cb0); } /* 2루타 */
+        .btn-triple { background: linear-gradient(#805ad5, #6b46c1); } /* 3루타 */
+        .btn-homerun { background: linear-gradient(#dd6b20, #c05621); animation: pulse 1.5s infinite; } /* 홈런 */
+
+        @keyframes pulse {
+            0% { box-shadow: 0 4px 0px rgba(0,0,0,0.4), 0 0 0px rgba(221,107,32,0.4); }
+            50% { box-shadow: 0 4px 0px rgba(0,0,0,0.4), 0 0 15px rgba(221,107,32,0.7); }
+            100% { box-shadow: 0 4px 0px rgba(0,0,0,0.4), 0 0 0px rgba(221,107,32,0.4); }
+        }
+
+        /* 최근 스코어 히스토리 로그 피드 */
+        .log-container {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 20px;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 12px;
+            box-sizing: border-box;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .log-title {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 4px;
+            text-align: left;
+        }
+        .log-item {
+            font-size: 0.9rem;
+            padding: 6px 0;
+            border-bottom: 1px dashed #1a1a1a;
+            text-align: left;
+            animation: fadeIn 0.3s ease;
+        }
+        .log-team-a { color: #ff8c5a; }
+        .log-team-b { color: #4fa7ff; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="user-bar">
+        <div>
+            <span id="user-team-display" style="font-weight: bold;"></span> 
+            <span id="user-player-display" style="color: #00bcd4;"></span> 선수 타석
+        </div>
+        <button class="logout-btn" onclick="location.href='index.html'">교체/퇴장</button>
+    </div>
+
+    <div class="scoreboard">
+        <div class="board-header">253 BASEBALL REALTIME SCOREBOARD</div>
+        <div class="score-table">
+            <div class="team-row team-a-row">
+                <div class="board-team-name">🔥 253 삼구삼진스</div>
+                <div class="board-score" id="score-A">0</div>
+            </div>
+            <div class="team-row team-b-row">
+                <div class="board-team-name">🦁 코스 라이언즈</div>
+                <div class="board-score" id="score-B">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-board">
+        <div class="action-title">🎯 미션 달성 시 안타를 날려주세요!</div>
+        <div class="hit-grid">
+            <button class="hit-btn btn-single" onclick="hitBall(1, '1루타 안타!')">1루타 (+1)</button>
+            <button class="hit-btn btn-double" onclick="hitBall(2, '2루타 2루타!')">2루타 (+2)</button>
+            <button class="hit-btn btn-triple" onclick="hitBall(3, '3루타를 펜스까지!!')">3루타 (+3)</button>
+            <button class="hit-btn btn-homerun" onclick="hitBall(4, '💥 대형 홈런!!! 💥')">홈런 🎉 (+4)</button>
+        </div>
+    </div>
+
+    <div class="log-container">
+        <div class="log-title">🎙️ 실시간 경기 중계 리포트</div>
+        <div id="log-feed">
+            <div style="color: #666; text-align: center; padding: 10px;">경기가 곧 시작됩니다...</div>
+        </div>
+    </div>
+
+<script>
+    // 🌟 [중요] 본인의 Firebase Realtime Database 주소를 여기에 똑같이 넣어주세요!
+    const FIREBASE_URL = "https://cos253baseball-default-rtdb.asia-southeast1.firebasedatabase.app/
+:
+null";
+
+    // 브라우저가 기억하고 있는 로그인 정보 꺼내오기
+    const myTeam = localStorage.getItem('baseball_team'); // 'A' 또는 'B'
+    const myTeamName = localStorage.getItem('baseball_team_name');
+    const myPlayer = localStorage.getItem('baseball_player');
+
+    // 로그인 정보가 없으면 다시 로그인 페이지로 쫓아내기
+    if (!myTeam || !myPlayer) {
+        window.location.href = 'index.html';
+    }
+
+    // 상단 텍스트 출력
+    document.getElementById('user-team-display').innerText = myTeamName;
+    document.getElementById('user-player-display').innerText = `[${myPlayer}]`;
+
+    // 1. 파이어베이스 데이터 실시간 모니터링 수신 함수
+    function initLiveScoreboard() {
+        // 점수 실시간 연동 듣기
+        fetch(`${FIREBASE_URL}scores.json`)
+        .then(res => res.json())
+        .then(data => {
+            if(data) {
+                document.getElementById('score-A').innerText = data.A || 0;
+                document.getElementById('score-B').innerText = data.B || 0;
+            }
+        });
+
+        // 경기 중계 로그 실시간 수신
+        fetch(`${FIREBASE_URL}logs.json?orderBy="$key"&limitToLast=15`)
+        .then(res => res.json())
+        .then(data => {
+            const feed = document.getElementById('log-feed');
+            if(!data || Object.keys(data).length === 0) return;
+            
+            feed.innerHTML = ""; // 기존 피드 초기화
+            
+            // 파이어베이스 데이터 정렬해서 최신순으로 화면 출력
+            const sortedLogs = Object.values(data).reverse();
+            sortedLogs.forEach(log => {
+                const logDiv = document.createElement('div');
+                logDiv.className = `log-item ${log.team === 'A' ? 'log-team-a' : 'log-team-b'}`;
+                logDiv.innerHTML = `⏱️ [${log.time}] <b>${log.teamName}</b> ${log.player} 선수 ➡️ <b>${log.hitText}</b>`;
+                feed.appendChild(logDiv);
+            });
+        });
+    }
+
+    // 2. 버튼 클릭 시 점수 올리기 및 로그 기록 전송 함수
+    function hitBall(scorePoints, hitText) {
+        if(!confirm(`[${hitText}] 점수를 반영하시겠습니까?`)) return;
+
+        // 현재 전광판 점수 가져오기
+        const currentScoreElement = document.getElementById(`score-${myTeam}`);
+        const currentScore = parseInt(currentScoreElement.innerText) || 0;
+        const newScore = currentScore + scorePoints;
+
+        // 실시간 현재 시간 구하기 (시:분:초)
+        const now = new Date();
+        const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+
+        // 전송할 로그 데이터 구조
+        const logData = {
+            team: myTeam,
+            teamName: myTeamName,
+            player: myPlayer,
+            hitText: hitText,
+            scorePoints: scorePoints,
+            time: timeStr
+        };
+
+        // A. 파이어베이스에 점수 업데이트 업데이트 호출
+        fetch(`${FIREBASE_URL}scores/${myTeam}.json`, {
+            method: 'PUT',
+            body: JSON.stringify(newScore)
+        })
+        .then(() => {
+            // B. 파이어베이스에 중계 전광판 기록 추가 호출
+            return fetch(`${FIREBASE_URL}logs.json`, {
+                method: 'POST',
+                body: JSON.stringify(logData)
+            });
+        })
+        .then(() => {
+            // 전송 완료 시 실시간으로 화면 즉각 새로고침 리로드 호출
+            initLiveScoreboard();
+        })
+        .catch(err => alert("네트워크 데이터 전송 실패! 다시 시도해 주세요."));
+    }
+
+    // 주기적으로 전광판 데이터 갱신 연동 (1.5초마다 파이어베이스 동기화 수신)
+    setInterval(initLiveScoreboard, 1500);
+    window.onload = initLiveScoreboard;
+</script>
+
+</body>
+</html>
