@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>253 BASEBALL - SCOREBOARD</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Black+Han+Sans&display=swap');
@@ -10,7 +10,7 @@
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(rgba(11, 14, 20, 0.35), rgba(11, 14, 20, 0.75)), 
+            background: linear-gradient(rgba(11, 14, 20, 0.45), rgba(11, 14, 20, 0.85)), 
                         url('stadium.png') no-repeat center center fixed;
             background-size: cover;
             color: #ffffff;
@@ -19,75 +19,80 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 15px;
+            padding: 10px;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .user-bar {
             width: 100%;
-            max-width: 800px;
+            max-width: 480px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.85);
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 2px solid #f2a900;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #f2a900;
+            font-size: 0.9rem;
         }
 
         .scoreboard {
             width: 100%;
-            max-width: 800px;
-            background: rgba(17, 21, 28, 0.85);
-            border: 4px solid #00bcd4;
-            border-radius: 12px;
-            padding: 15px 20px;
+            max-width: 480px;
+            background: rgba(17, 21, 28, 0.9);
+            border: 3px solid #00bcd4;
+            border-radius: 10px;
+            padding: 12px;
             box-sizing: border-box;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .board-header {
             text-align: center;
             font-family: 'Orbitron', sans-serif;
             color: #f2a900;
-            font-size: 1.3rem;
-            margin-bottom: 12px;
-            border-bottom: 2px dashed #444;
-            padding-bottom: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #444;
+            padding-bottom: 5px;
         }
 
-        .score-table { display: flex; flex-direction: column; gap: 10px; }
-        .team-row { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.6); padding: 12px 20px; border-radius: 8px; }
-        .board-team-name { font-size: 1.4rem; }
-        .board-score { font-family: 'Orbitron', sans-serif; font-size: 2.4rem; }
+        .score-table { display: flex; flex-direction: column; gap: 6px; }
+        .team-row { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.6); padding: 8px 14px; border-radius: 6px; }
+        .board-team-name { font-size: 1.1rem; }
+        .board-score { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; }
 
         .action-board {
             width: 100%;
-            max-width: 800px;
-            background: rgba(0, 0, 0, 0.85);
-            border: 3px solid #ff4d4d;
-            border-radius: 12px;
-            padding: 20px;
+            max-width: 480px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff4d4d;
+            border-radius: 10px;
+            padding: 14px;
             box-sizing: border-box;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
-        .action-title { font-size: 1.3rem; color: #ff4d4d; margin-bottom: 15px; text-align: center; }
+        .action-title { font-size: 1.0rem; color: #ff4d4d; margin-bottom: 10px; text-align: center; }
 
-        .mission-list { display: flex; flex-direction: column; gap: 10px; }
+        .mission-list { display: flex; flex-direction: column; gap: 8px; }
+        
+        /* 📱 모바일 터치 영역 확장형 대형 버튼 */
         .mission-btn {
             width: 100%;
-            padding: 16px 20px;
+            padding: 14px 12px;
             font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.15rem;
-            border: 2px solid #444;
-            border-radius: 8px;
+            font-size: 1.0rem;
+            border: 1px solid #444;
+            border-radius: 6px;
             background: #222;
             color: #fff;
             cursor: pointer;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
         }
         .mission-btn.cleared {
             background: linear-gradient(135deg, #1d6f4f, #11422f);
@@ -97,42 +102,40 @@
             pointer-events: none;
         }
 
-        /* 📊 일별 집계 테이블 디자인 */
         .history-board {
             width: 100%;
-            max-width: 800px;
-            background: rgba(10, 15, 25, 0.9);
-            border: 2px solid #f2a900;
-            border-radius: 12px;
-            padding: 15px;
+            max-width: 480px;
+            background: rgba(10, 15, 25, 0.92);
+            border: 1px solid #f2a900;
+            border-radius: 10px;
+            padding: 10px;
             box-sizing: border-box;
-            margin-top: 15px;
         }
         .history-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 6px;
         }
         .history-table th, .history-table td {
-            padding: 10px;
+            padding: 8px 4px;
             text-align: center;
-            border-bottom: 1px solid #333;
-            font-size: 0.95rem;
+            border-bottom: 1px solid #222;
+            font-size: 0.8rem;
         }
-        .history-table th { background-color: rgba(242, 169, 0, 0.2); color: #f2a900; }
+        .history-table th { background-color: rgba(242, 169, 0, 0.15); color: #f2a900; }
 
         .log-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 480px;
             background: rgba(0, 0, 0, 0.9);
             border: 1px solid #333;
-            border-radius: 8px;
-            padding: 12px;
-            max-height: 120px;
+            border-radius: 6px;
+            padding: 8px;
+            max-height: 90px;
             overflow-y: auto;
-            margin-top: 15px;
+            margin-top: 10px;
         }
-        .log-item { padding: 5px 0; font-size: 0.9rem; border-bottom: 1px dashed #222; text-align: left; }
+        .log-item { padding: 4px 0; font-size: 0.8rem; border-bottom: 1px dashed #222; text-align: left; }
     </style>
 </head>
 <body>
@@ -140,19 +143,19 @@
     <div class="user-bar">
         <div>
             <span id="user-team-display" style="color:#f2a900;"></span> 
-            <span id="user-player-display" style="color: #00bcd4;"></span> 타석 활성화 중 ⚾
+            <span id="user-player-display" style="color: #00bcd4;"></span> 타석 ⚾
         </div>
-        <button style="background:#ff4d4d; border:none; color:white; padding:6px 12px; border-radius:4px; cursor:pointer;" onclick="location.href='index.html'">교체/퇴장</button>
+        <button style="background:#ff4d4d; border:none; color:white; padding:4px 10px; border-radius:4px; font-size:0.8rem;" onclick="location.href='index.html'">퇴장</button>
     </div>
 
     <div class="scoreboard">
-        <div class="board-header" id="today-board-title">COS 253 BASEBALL REALTIME BOARD</div>
+        <div class="board-header" id="today-board-title">COS 253 BOARD</div>
         <div class="score-table">
-            <div class="team-row" style="border-left: 6px solid #ff6b35;">
-                <div class="board-team-name">🔥 253 삼구삼진스</div>
+            <div class="team-row" style="border-left: 4px solid #ff6b35;">
+                <div class="board-team-name">🔥 삼구삼진스</div>
                 <div class="board-score" id="score-A" style="color:#ff6b35;">0</div>
             </div>
-            <div class="team-row" style="border-left: 6px solid #0077b6;">
+            <div class="team-row" style="border-left: 4px solid #0077b6;">
                 <div class="board-team-name">🦁 코스 라이언즈</div>
                 <div class="board-score" id="score-B" style="color:#0077b6;">0</div>
             </div>
@@ -160,23 +163,23 @@
     </div>
 
     <div class="action-board">
-        <div class="action-title" id="dynamic-action-title">⚠️ 상대팀이 지정한 미션 대기 중...</div>
+        <div class="action-title" id="dynamic-action-title">⚠️ 상대 미션 로드 중...</div>
         <div class="mission-list" id="game-mission-list"></div>
     </div>
 
     <div class="history-board">
-        <div style="color: #f2a900; font-size: 1.1rem; text-align: center;">📅 데일리 매치 기록 집계판 (날마다 자동 리셋)</div>
+        <div style="color: #f2a900; font-size: 0.85rem; text-align: center;">📅 데일리 매치 기록 집계판</div>
         <table class="history-table">
             <thead>
                 <tr>
                     <th>날짜</th>
-                    <th style="color:#ff6b35;">삼구삼진스</th>
-                    <th style="color:#0077b6;">코스 라이언즈</th>
-                    <th>우승 팀</th>
+                    <th style="color:#ff6b35;">삼구스</th>
+                    <th style="color:#0077b6;">라이언즈</th>
+                    <th>우승</th>
                 </tr>
             </thead>
             <tbody id="history-tbody">
-                <tr><td colspan="4" style="color:#777;">불러오는 중...</td></tr>
+                <tr><td colspan="4" style="color:#777;">로드 중...</td></tr>
             </tbody>
         </table>
     </div>
@@ -192,43 +195,38 @@
     const myTeamName = localStorage.getItem('baseball_team_name');
     const myPlayer = localStorage.getItem('baseball_player');
 
-    // 오늘 날짜 문자열
     const todayStr = new Date().toISOString().split('T')[0];
-    document.getElementById('today-board-title').innerText = `COS 253 BASEBALL BOARD [${todayStr}]`;
+    document.getElementById('today-board-title').innerText = `COS 253 [${todayStr}]`;
 
     if (!myTeam || !myPlayer) window.location.href = 'index.html';
 
-    document.getElementById('user-team-display').innerText = myTeamName;
+    document.getElementById('user-team-display').innerText = myTeamName.split(' ')[1] || myTeamName;
     document.getElementById('user-player-display').innerText = `[${myPlayer}]`;
 
     let serverMissions = [];
     let clearedMissions = [];
 
     function syncGameData() {
-        // 1. 💡 오늘 날짜 디렉토리에서 점수 가져오기 (매일 0점으로 자동 리셋 효과)
         fetch(`${FIREBASE_URL}daily_scores/${todayStr}.json`).then(res => res.json()).then(data => {
             document.getElementById('score-A').innerText = (data && data.A !== undefined) ? data.A : 0;
             document.getElementById('score-B').innerText = (data && data.B !== undefined) ? data.B : 0;
         });
 
-        // 2. 오늘 날짜의 미션 리스트 실시간 조회
         fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${myTeam}.json`).then(res => res.json()).then(data => {
             const listContainer = document.getElementById('game-mission-list');
             const titleEl = document.getElementById('dynamic-action-title');
 
             if (!data || !data.list || data.list.length === 0) {
-                titleEl.innerText = "⏳ 상대 팀 첫 출근자가 미션을 선택할 때까지 대기 중입니다...";
+                titleEl.innerText = "⏳ 상대팀 미션 투구 대기 중...";
                 listContainer.innerHTML = "";
                 return;
             }
 
-            titleEl.innerText = `💣 상대팀이 던진 미션 리스트 (격파 시 누적 점수 증가!)`;
+            titleEl.innerText = `💣 상대방이 지목한 타격 미션`;
             serverMissions = data.list;
             
-            // 오늘 내가 클리어한 미션 내역 로드
             fetch(`${FIREBASE_URL}daily_cleared/${todayStr}/${myTeam}/${myPlayer}.json`).then(res => res.json()).then(cData => {
                 clearedMissions = cData ? Object.values(cData) : [];
-                
                 listContainer.innerHTML = "";
                 const currentClearCount = clearedMissions.length;
 
@@ -248,7 +246,7 @@
                         else if(currentClearCount === 3) nextScoreTip = "홈런 (+4)";
                         else if(currentClearCount === 4) nextScoreTip = "2점홈런 🎉 (+4)";
 
-                        btn.innerHTML = `<span>🎯 미션: ${mission}</span> <b style="color:#ff4d4d;">성공 시 ${nextScoreTip}</b>`;
+                        btn.innerHTML = `<span>🎯 ${mission}</span> <span style="color:#ff4d4d; font-size:0.85rem; font-weight:bold;">👉 성공 시 ${nextScoreTip}</span>`;
                         btn.onclick = () => clearTargetMission(mission, currentClearCount + 1);
                     }
                     listContainer.appendChild(btn);
@@ -256,38 +254,35 @@
             });
         });
 
-        // 3. 📅 전체 일별 집계판 목록 바인딩
         fetch(`${FIREBASE_URL}daily_scores.json`).then(res => res.json()).then(allScores => {
             const tbody = document.getElementById('history-tbody');
             if(!allScores) {
-                tbody.innerHTML = `<tr><td colspan="4" style="color:#777;">아직 진행된 매치 기록이 없습니다.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="color:#777;">매치 기록 없음</td></tr>`;
                 return;
             }
             tbody.innerHTML = "";
-            // 날짜 최신순 정렬
-            Object.keys(allScores).sort().reverse().forEach(dateKey => {
+            Object.keys(allScores).sort().reverse().slice(0, 5).forEach(dateKey => {
                 const dayData = allScores[dateKey];
                 const scoreA = dayData.A || 0;
                 const scoreB = dayData.B || 0;
                 
-                let winnerText = "무승부 🤝";
-                if(scoreA > scoreB) winnerText = "🏆 삼구삼진스";
-                else if(scoreB > scoreA) winnerText = "🏆 코스 라이언즈";
+                let winnerText = "무승부";
+                if(scoreA > scoreB) winnerText = "삼구스";
+                else if(scoreB > scoreA) winnerText = "라이언즈";
 
                 const tr = document.createElement('tr');
-                if(dateKey === todayStr) tr.style.backgroundColor = "rgba(0, 188, 212, 0.15)"; // 오늘 날짜 하이라이트
+                if(dateKey === todayStr) tr.style.backgroundColor = "rgba(0, 188, 212, 0.12)";
                 tr.innerHTML = `
-                    <td>${dateKey} ${dateKey === todayStr ? '(오늘)' : ''}</td>
-                    <td style="color:#ff6b35; font-weight:bold;">${scoreA} 점</td>
-                    <td style="color:#0077b6; font-weight:bold;">${scoreB} 점</td>
-                    <td style="color:#f2a900;">${winnerText}</td>
+                    <td>${dateKey.substring(5)}</td>
+                    <td style="color:#ff6b35;">${scoreA}</td>
+                    <td style="color:#0077b6;">${scoreB}</td>
+                    <td style="color:#f2a900; font-size:0.75rem;">${winnerText}</td>
                 `;
                 tbody.appendChild(tr);
             });
         });
 
-        // 4. 중계 리포트 피드 갱신
-        fetch(`${FIREBASE_URL}logs.json?orderBy="$key"&limitToLast=10`).then(res => res.json()).then(data => {
+        fetch(`${FIREBASE_URL}logs.json?orderBy="$key"&limitToLast=5`).then(res => res.json()).then(data => {
             const feed = document.getElementById('log-feed');
             if(!data) return;
             feed.innerHTML = "";
@@ -295,7 +290,7 @@
                 const log = data[key];
                 const div = document.createElement('div');
                 div.className = "log-item";
-                div.innerHTML = `⏱️ [${log.time}] <b>${log.teamName}</b> ${log.player} ➡️ ${log.hitText}`;
+                div.innerHTML = `⏱️[${log.time}] <b>${log.player}</b>:${log.hitText.substring(7)}`;
                 feed.appendChild(div);
             });
         });
@@ -305,21 +300,19 @@
         let hitText = "";
         let points = 0;
 
-        if (nextStep === 1) { hitText = "1구째 미션 격파! 1루타 안타!"; points = 1; }
-        else if (nextStep === 2) { hitText = "2구째 미션 격파! 우중간 가르는 2루타!!"; points = 2; }
-        else if (nextStep === 3) { hitText = "3구째 미션 격파! 펜스 대형 3루타!!!"; points = 3; }
-        else if (nextStep === 4) { hitText = "4구째 미션 격파! 대형 솔로 홈런 짜릿하게 작렬!!!"; points = 4; }
-        else if (nextStep === 5) { hitText = "🔥 5개 미션 올클리어 완료!! 백투백 2점 홈런!!! [보너스 코스머니 +1,000원]"; points = 4; }
+        if (nextStep === 1) { hitText = "미션 격파! 1루타 안타!"; points = 1; }
+        else if (nextStep === 2) { hitText = "미션 격파! 2루타!!"; points = 2; }
+        else if (nextStep === 3) { hitText = "미션 격파! 3루타!!!"; points = 3; }
+        else if (nextStep === 4) { hitText = "미션 격파! 솔로 홈런!!!"; points = 4; }
+        else if (nextStep === 5) { hitText = "🔥 올클리어 완료!! 2점 홈런!!! [+코스머니 1,000원]"; points = 4; }
 
-        if(!confirm(`[${missionName}] 미션을 달성하여 타격을 날릴까요?`)) return;
+        if(!confirm(`미션을 달성하셨습니까?`)) return;
 
-        // 오늘 날짜 경로에 클리어 내역 등록
         fetch(`${FIREBASE_URL}daily_cleared/${todayStr}/${myTeam}/${myPlayer}.json`, {
             method: 'POST',
             body: JSON.stringify(missionName)
         })
         .then(() => {
-            // 오늘 날짜의 기존 팀 스코어 가져오기
             return fetch(`${FIREBASE_URL}daily_scores/${todayStr}/${myTeam}.json`).then(res => res.json());
         })
         .then((currentScore) => {
@@ -333,7 +326,7 @@
         })
         .then(() => {
             const now = new Date();
-            const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+            const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
             
             const logData = {
                 team: myTeam,
@@ -348,7 +341,7 @@
         .then(() => {
             syncGameData();
             if(nextStep === 5) {
-                alert("🎉 축하합니다! 모든 미션을 전부 격파하여 2점 홈런과 함께 [보너스 코스머니 +1,000원]을 획득했습니다!");
+                alert("🎉 모든 미션을 전부 격파하여 2점 홈런과 함께 [보너스 코스머니 +1,000원]을 획득했습니다!");
             }
         });
     }
