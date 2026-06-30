@@ -70,7 +70,7 @@
         
         <div class="logo-container">
             <img id="logo-lions" class="logo-img" src="lions_logo.png" alt="COS LIONS">
-            <img id="logo-strikeouts" class="logo-img" src="strikeouts_logo.png" alt="393 STRIKEOUTS">
+            <img id="logo-search" class="logo-img" src="strikeouts_logo.png" alt="393 STRIKEOUTS">
         </div>
 
         <div class="form-group">
@@ -84,14 +84,13 @@
         <div class="form-group">
             <label>선수 이름 선택</label>
             <select id="player-select">
-                <!-- 선택한 팀에 맞는 정확한 명단이 들어갑니다 -->
-            </select>
+                </select>
         </div>
 
         <button class="start-btn" onclick="enterGame()">경기장 입장 🏟️</button>
 
         <div class="admin-section">
-            <div style="font-size:0.85rem; color:#aaa; margin-bottom:10px;">☀️ 각 팀 첫출근자 전용 미션 투구</div>
+            <div style="font-size:0.85rem; color:#aaa; margin-bottom:10px;">☀️ 첫출근자 전용: 상대 팀 미션 투구</div>
             <button class="admin-btn" onclick="openMissionPitcher('A')">🔥 삼구삼진스 ➡ 라이언즈 미션 지정</button>
             <button class="admin-btn" onclick="openMissionPitcher('B')">🦁 코스 라이언즈 ➡ 삼구진스 미션 지정</button>
             <div style="margin-top:15px;">
@@ -114,7 +113,6 @@
     const FIREBASE_URL = "https://cos253baseball-default-rtdb.asia-southeast1.firebasedatabase.app/";
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // 📋 요청하신 실제 팀원 명단 업데이트 완료!
     const teamPlayers = {
         A: ["성경", "윤정", "정훈", "혜인", "선우"], // 🔥 삼구삼진스
         B: ["주하", "유진", "지인", "정환", "채령"]  // 🦁 코스 라이언즈
@@ -139,7 +137,7 @@
     function updateTeamLogo() {
         const team = document.getElementById('team-select').value;
         document.getElementById('logo-lions').style.display = (team === 'B') ? 'block' : 'none';
-        document.getElementById('logo-strikeouts').style.display = (team === 'A') ? 'block' : 'none';
+        document.getElementById('logo-search').style.display = (team === 'A') ? 'block' : 'none';
     }
 
     function updatePlayerList() {
@@ -166,7 +164,12 @@
         location.href = 'game.html';
     }
 
+    // ⚾ [방어 로직 보정 완료] 
+    // attackerTeam은 버튼을 누른 주체 팀입니다.
     function openMissionPitcher(attackerTeam) {
+        // 무조건 누른 사람의 '상대방 팀(Target)'을 정해 데이터베이스 경로를 매칭합니다.
+        // A(삼구스)가 누르면 -> B(라이언즈)가 타겟이 됨
+        // B(라이언즈)가 누르면 -> A(삼구스)가 타겟이 됨
         currentTargetTeam = (attackerTeam === 'A') ? 'B' : 'A';
         
         fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${currentTargetTeam}.json`).then(res => res.json()).then(data => {
