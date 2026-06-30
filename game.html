@@ -3,194 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>253 BASEBALL - SCOREBOARD</title>
+    <title>253 BASEBALL - TEAM MODE</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght=700&family=Black+Han+Sans&display=swap');
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #0b0e14;
-            color: #ffffff;
-            font-family: 'Black Han Sans', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 12px;
-            box-sizing: border-box;
+            margin: 0; padding: 0; background-color: #0b0e14; color: #ffffff;
+            font-family: 'Black Han Sans', sans-serif; display: flex; flex-direction: column;
+            align-items: center; min-height: 100vh; padding: 12px; box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
 
         .user-bar {
-            width: 100%;
-            max-width: 450px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            border: 1px solid #f2a900;
-            font-size: 0.95rem;
+            width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0, 0, 0, 0.9); padding: 12px 16px; border-radius: 8px; margin-bottom: 12px;
+            border: 1px solid #f2a900; font-size: 0.95rem;
         }
 
-        /* 🏟️ 모바일에서 배경 이미지가 절대 깨지지 않도록 가로세로 비율 고정 */
+        /* 🏟️ 모바일 최적화 야구장 배경 레이아웃 */
         .stadium-container {
-            width: 100%;
-            max-width: 450px;
-            aspect-ratio: 3 / 2; /* 야구장 이미지 비율 고정 */
-            background-image: url('stadium.png'); /* 파일명을 stadium.png로 변경 */
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: 100% 100%; /* 이미지가 구역에 꽉 차도록 설정 */
-            border: 3px solid #00bcd4;
-            border-radius: 12px;
-            position: relative;
-            margin-bottom: 12px;
-            overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 188, 212, 0.4);
-            box-sizing: border-box;
+            width: 100%; max-width: 450px; aspect-ratio: 3 / 2;
+            background-image: url('stadium.png');
+            background-repeat: no-repeat; background-position: center center; background-size: 100% 100%;
+            border: 3px solid #00bcd4; border-radius: 12px; position: relative; margin-bottom: 12px;
+            overflow: hidden; box-shadow: 0 0 15px rgba(0, 188, 212, 0.4); box-sizing: border-box;
         }
 
-        /* 🏟️ 오락실 전광판 스타일의 네온 주자 표시 */
-.base-runner {
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    background-color: #fffb00; /* 오락실 전광판 특유의 밝은 노란색 */
-    border-radius: 50%;
-    z-index: 99;
-    transform: translate(-50%, -50%);
-    display: none;
-    box-shadow: 0 0 10px #fffb00, 0 0 20px #ffea00; /* 번쩍이는 네온 효과 */
-    animation: arcade-blink 0.6s infinite alternate; /* 깜빡이는 애니메이션 */
-    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-}
+        /* ✨ 네온 깜빡이 주자 스타일 (stadium.png 원근감 최적화) */
+        .base-runner {
+            position: absolute; width: 14px; height: 14px; background-color: #fffb00;
+            border-radius: 50%; z-index: 99; transform: translate(-50%, -50%);
+            display: none; box-shadow: 0 0 10px #fffb00, 0 0 20px #ffea00;
+            animation: arcade-blink 0.6s infinite alternate;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
 
-/* 옛날 게임기처럼 파르르 깜빡이는 효과 */
-@keyframes arcade-blink {
-    0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.9); }
-    100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-}
-
+        @keyframes arcade-blink {
+            0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        }
 
         .scoreboard {
-            width: 100%;
-            max-width: 450px;
-            background: rgba(17, 21, 28, 0.95);
-            border: 2px solid #f2a900;
-            border-radius: 12px;
-            padding: 12px;
-            box-sizing: border-box;
-            margin-bottom: 12px;
+            width: 100%; max-width: 450px; background: rgba(17, 21, 28, 0.95);
+            border: 2px solid #f2a900; border-radius: 12px; padding: 12px; box-sizing: border-box; margin-bottom: 12px;
         }
 
-        .board-header {
-            text-align: center;
-            font-family: 'Orbitron', sans-serif;
-            color: #f2a900;
-            font-size: 1.0rem;
-            margin-bottom: 8px;
-            border-bottom: 1px dashed #444;
-            padding-bottom: 4px;
-        }
+        .board-header { text-align: center; font-family: 'Orbitron', sans-serif; color: #f2a900; font-size: 1.0rem; margin-bottom: 8px; border-bottom: 1px dashed #444; padding-bottom: 4px; }
+        .team-row { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.6); padding: 8px 14px; border-radius: 8px; margin-top: 5px; }
+        .board-score { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; }
 
-        .score-table { display: flex; flex-direction: column; gap: 6px; }
-        .team-row { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.6); padding: 8px 14px; border-radius: 8px; }
-        .board-team-name { font-size: 1.1rem; }
-        .board-score { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; }
-
-        .action-board {
-            width: 100%;
-            max-width: 450px;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #ff4d4d;
-            border-radius: 12px;
-            padding: 14px;
-            box-sizing: border-box;
-            margin-bottom: 12px;
-        }
+        .action-board { width: 100%; max-width: 450px; background: rgba(0, 0, 0, 0.9); border: 2px solid #ff4d4d; border-radius: 12px; padding: 14px; box-sizing: border-box; margin-bottom: 12px; }
         .action-title { font-size: 1.05rem; color: #ff4d4d; margin-bottom: 10px; text-align: center; }
 
         .mission-list { display: flex; flex-direction: column; gap: 8px; }
-        
         .mission-btn {
-            width: 100%;
-            padding: 14px 12px;
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.0rem;
-            border: 2px solid #444;
-            border-radius: 8px;
-            background: #1e222b;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
+            width: 100%; padding: 14px 12px; font-family: 'Black Han Sans', sans-serif; font-size: 1.0rem;
+            border: 2px solid #444; border-radius: 8px; background: #1e222b; color: #fff; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
         }
-        .mission-btn.cleared {
-            background: linear-gradient(135deg, #1d6f4f, #11422f);
-            border-color: #2d9a74;
-            color: rgba(255,255,255,0.4);
-            text-decoration: line-through;
-            pointer-events: none;
-        }
+        .mission-btn.cleared { background: #111; color: #444; border-color: #222; text-decoration: line-through; pointer-events: none; }
 
-        .history-board {
-            width: 100%;
-            max-width: 450px;
-            background: rgba(10, 15, 25, 0.92);
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-        .history-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
-        .history-table th, .history-table td { padding: 8px 4px; text-align: center; border-bottom: 1px solid #222; font-size: 0.85rem; }
-        .history-table th { background-color: rgba(242, 169, 0, 0.15); color: #f2a900; }
-
-        .log-container {
-            width: 100%;
-            max-width: 450px;
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid #222;
-            border-radius: 8px;
-            padding: 8px;
-            max-height: 80px;
-            overflow-y: auto;
-            margin-top: 10px;
-        }
+        .log-container { width: 100%; max-width: 450px; background: rgba(0, 0, 0, 0.9); border: 1px solid #222; border-radius: 8px; padding: 8px; max-height: 80px; overflow-y: auto; }
         .log-item { padding: 4px 0; font-size: 0.8rem; border-bottom: 1px dashed #222; color: #aaa; }
     </style>
 </head>
 <body>
 
     <div class="user-bar">
-        <div>
-            <span id="user-team-display" style="color:#f2a900;"></span> 
-            <span id="user-player-display" style="color: #00bcd4;"></span> 타석 ⚾
-        </div>
+        <div><span id="user-team-display" style="color:#f2a900;"></span> <span id="user-player-display" style="color: #00bcd4;"></span> 타석</div>
         <button style="background:#ff4d4d; border:none; color:white; padding:5px 10px; border-radius:6px; font-size:0.8rem;" onclick="location.href='index.html'">퇴장</button>
     </div>
 
     <div class="stadium-container" id="stadium-map">
-        <div class="base-runner" id="runner-piece"></div>
-    </div>
+        <div class="base-runner" id="runner-1" style="top: 69%; left: 71%;"></div> <div class="base-runner" id="runner-2" style="top: 56%; left: 50%;"></div> <div class="base-runner" id="runner-3" style="top: 69%; left: 29%;"></div> </div>
 
     <div class="scoreboard">
-        <div class="board-header" id="today-board-title">COS 253 BOARD</div>
-        <div class="score-table">
-            <div class="team-row" style="border-left: 5px solid #ff6b35;">
-                <div class="board-team-name">🔥 253 삼구삼진스</div>
-                <div class="board-score" id="score-A" style="color:#ff6b35;">0</div>
-            </div>
-            <div class="team-row" style="border-left: 5px solid #0077b6;">
-                <div class="board-team-name">🦁 코스 라이언즈</div>
-                <div class="board-score" id="score-B" style="color:#0077b6;">0</div>
-            </div>
+        <div class="board-header" id="today-board-title">TEAM REAL BASEBALL</div>
+        <div class="team-row" style="border-left: 5px solid #ff6b35;">
+            <div>🔥 삼구삼진스</div><div class="board-score" id="score-A" style="color:#ff6b35;">0</div>
+        </div>
+        <div class="team-row" style="border-left: 5px solid #0077b6;">
+            <div>🦁 코스 라이언즈</div><div class="board-score" id="score-B" style="color:#0077b6;">0</div>
         </div>
     </div>
 
@@ -199,212 +92,166 @@
         <div class="mission-list" id="game-mission-list"></div>
     </div>
 
-    <div class="history-board">
-        <div style="color: #f2a900; font-size: 0.85rem; text-align: center;">📅 데일리 매치 기록 집계판</div>
-        <table class="history-table">
-            <thead>
-                <tr>
-                    <th>날짜</th>
-                    <th style="color:#ff6b35;">삼구스</th>
-                    <th style="color:#0077b6;">라이언즈</th>
-                    <th>우승</th>
-                </tr>
-            </thead>
-            <tbody id="history-tbody">
-                <tr><td colspan="4" style="color:#777;">로드 중...</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="log-container">
-        <div id="log-feed"></div>
-    </div>
+    <div class="log-container"><div id="log-feed"></div></div>
 
 <script>
     const FIREBASE_URL = "https://cos253baseball-default-rtdb.asia-southeast1.firebasedatabase.app/";
-
     const myTeam = localStorage.getItem('baseball_team'); 
     const myTeamName = localStorage.getItem('baseball_team_name');
     const myPlayer = localStorage.getItem('baseball_player');
-
     const todayStr = new Date().toISOString().split('T')[0];
-    document.getElementById('today-board-title').innerText = `COS 253 [${todayStr}]`;
 
     if (!myTeam || !myPlayer) window.location.href = 'index.html';
 
     document.getElementById('user-team-display').innerText = myTeamName.split(' ')[1] || myTeamName;
     document.getElementById('user-player-display').innerText = `[${myPlayer}]`;
 
-    let serverMissions = [];
-    let clearedMissions = [];
-
-    // 🎯 stadium.png의 원근감에 최적화하여 조정한 베이스별 XY 좌표 비율
-    const baseCoordinates = {
-        0: { top: '88%', left: '50%' },   // 홈 플레이트 (타석)
-        1: { top: '69%', left: '71%' },   // 1루
-        2: { top: '56%', left: '50%' },   // 2루
-        3: { top: '69%', left: '29%' }    // 3루
-    };
-
-    function updateRunnerPosition(clearCount) {
-        const runner = document.getElementById('runner-piece');
-        
-        if (clearCount === 0 || clearCount > 4) {
-            runner.style.display = 'none';
-            return;
-        }
-
-        let currentBase = clearCount;
-        if(currentBase > 3) currentBase = 3; // 4번째는 홈런이므로 3루 대기
-
-        const coords = baseCoordinates[currentBase];
-        runner.style.display = 'block';
-        runner.style.top = coords.top;
-        runner.style.left = coords.left;
-    }
-
     function syncGameData() {
-        fetch(`${FIREBASE_URL}daily_scores/${todayStr}.json`).then(res => res.json()).then(data => {
-            document.getElementById('score-A').innerText = (data && data.A !== undefined) ? data.A : 0;
-            document.getElementById('score-B').innerText = (data && data.B !== undefined) ? data.B : 0;
+        // 1. 실시간 팀 베이스 및 스코어 연동
+        fetch(`${FIREBASE_URL}team_status/${todayStr}.json`).then(res => res.json()).then(data => {
+            const scoreA = (data && data.A) ? data.A.score : 0;
+            const scoreB = (data && data.B) ? data.B.score : 0;
+            document.getElementById('score-A').innerText = scoreA;
+            document.getElementById('score-B').innerText = scoreB;
+
+            const myTeamData = (data && data[myTeam]) ? data[myTeam] : { bases: [0, 0, 0] };
+            const bases = myTeamData.bases || [0, 0, 0];
+            
+            // 네온 주자 실시간 노출 처리
+            document.getElementById('runner-1').style.display = bases[0] === 1 ? 'block' : 'none';
+            document.getElementById('runner-2').style.display = bases[1] === 1 ? 'block' : 'none';
+            document.getElementById('runner-3').style.display = bases[2] === 1 ? 'block' : 'none';
         });
 
+        // 2. 미션 정보 및 본인 달성 누적치 가져오기
         fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${myTeam}.json`).then(res => res.json()).then(data => {
             const listContainer = document.getElementById('game-mission-list');
             const titleEl = document.getElementById('dynamic-action-title');
 
-            if (!data || !data.list || data.list.length === 0) {
+            if (!data || !data.list) {
                 titleEl.innerText = "⏳ 상대팀 미션 투구 대기 중...";
                 listContainer.innerHTML = "";
-                updateRunnerPosition(0);
                 return;
             }
 
-            titleEl.innerText = `💣 상대방이 지목한 타격 미션`;
-            serverMissions = data.list;
+            titleEl.innerText = `💣 현재 내 진루권 미션판`;
             
             fetch(`${FIREBASE_URL}daily_cleared/${todayStr}/${myTeam}/${myPlayer}.json`).then(res => res.json()).then(cData => {
-                clearedMissions = cData ? Object.values(cData) : [];
+                const clearedMissions = cData ? Object.values(cData) : [];
                 listContainer.innerHTML = "";
-                const currentClearCount = clearedMissions.length;
+                const myCurrentHits = clearedMissions.length; // 내가 오늘 몇 번째 미션을 깨는지 판정
 
-                updateRunnerPosition(currentClearCount);
-
-                serverMissions.forEach((mission) => {
+                data.list.forEach((mission) => {
                     const btn = document.createElement('button');
                     btn.className = "mission-btn";
                     
-                    const isCleared = clearedMissions.includes(mission);
-                    if(isCleared) {
+                    if(clearedMissions.includes(mission)) {
                         btn.classList.add('cleared');
                         btn.innerHTML = `<span>✅ 완료: ${mission}</span>`;
                     } else {
-                        let nextScoreTip = "";
-                        if(currentClearCount === 0) nextScoreTip = "1루타 (+1)";
-                        else if(currentClearCount === 1) nextScoreTip = "2루타 (+2)";
-                        else if(currentClearCount === 2) nextScoreTip = "3루타 (+3)";
-                        else if(currentClearCount === 3) nextScoreTip = "홈런 (+4)";
-                        else if(currentClearCount === 4) nextScoreTip = "2점홈런 🎉 (+4)";
+                        // 🎯 내가 오늘 깬 개수별 진루권 힌트 매칭
+                        let hitTypeTip = "";
+                        let nextHits = myCurrentHits + 1;
+                        if(nextHits === 1) hitTypeTip = "1루타 안타! ⚾";
+                        else if(nextHits === 2) hitTypeTip = "2루타!! ⚾⚾";
+                        else if(nextHits === 3) hitTypeTip = "3루타!!! ⚾⚾⚾";
+                        else if(nextHits === 4) hitTypeTip = "💥 솔로 홈런!!!";
+                        else if(nextHits === 5) hitTypeTip = "🚀 백투백 홈런!!!";
 
-                        btn.innerHTML = `<span>🎯 ${mission}</span> <span style="color:#ff4d4d; font-size:0.85rem; font-weight:bold;">👉 성공 시 ${nextScoreTip}</span>`;
-                        btn.onclick = () => clearTargetMission(mission, currentClearCount + 1);
+                        btn.innerHTML = `<span>🎯 ${mission}</span> <span style="color:#ff4d4d; font-size:0.85rem;">👉 ${hitTypeTip}</span>`;
+                        btn.onclick = () => clearRealBaseballMission(mission, nextHits);
                     }
                     listContainer.appendChild(btn);
                 });
             });
         });
 
-        fetch(`${FIREBASE_URL}daily_scores.json`).then(res => res.json()).then(allScores => {
-            const tbody = document.getElementById('history-tbody');
-            if(!allScores) {
-                tbody.innerHTML = `<tr><td colspan="4" style="color:#777;">매치 기록 없음</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = "";
-            Object.keys(allScores).sort().reverse().slice(0, 5).forEach(dateKey => {
-                const dayData = allScores[dateKey];
-                const scoreA = dayData.A || 0;
-                const scoreB = dayData.B || 0;
-                
-                let winnerText = "무승부";
-                if(scoreA > scoreB) winnerText = "삼구스";
-                else if(scoreB > scoreA) winnerText = "라이언즈";
-
-                const tr = document.createElement('tr');
-                if(dateKey === todayStr) tr.style.backgroundColor = "rgba(0, 188, 212, 0.12)";
-                tr.innerHTML = `
-                    <td>${dateKey.substring(5)}</td>
-                    <td style="color:#ff6b35;">${scoreA}</td>
-                    <td style="color:#0077b6;">${scoreB}</td>
-                    <td style="color:#f2a900; font-size:0.75rem;">${winnerText}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        });
-
+        // 3. 라이브 중계 로그
         fetch(`${FIREBASE_URL}logs.json?orderBy="$key"&limitToLast=5`).then(res => res.json()).then(data => {
             const feed = document.getElementById('log-feed');
-            if(!data) { feed.innerHTML = "<div style='color:#666; font-size:0.8rem;'>전광판 실시간 대기 중...</div>"; return; }
+            if(!data) return;
             feed.innerHTML = "";
             Object.keys(data).reverse().forEach(key => {
                 const log = data[key];
                 const div = document.createElement('div');
                 div.className = "log-item";
-                div.innerHTML = `⏱️[${log.time}] <b>${log.player}</b>:${log.hitText.substring(7)}`;
+                div.innerHTML = `⏱️[${log.time}] <b>${log.player}</b>: ${log.hitText}`;
                 feed.appendChild(div);
             });
         });
     }
 
-    function clearTargetMission(missionName, nextStep) {
-        let hitText = "";
-        let points = 0;
+    function clearRealBaseballMission(missionName, hitType) {
+        let hitLogText = "";
+        let baseAdvance = hitType; // 1=1루타, 2=2루타, 3=3루타, 4=홈런, 5=홈런(보정)
+        if(baseAdvance > 4) baseAdvance = 4; // 5개째도 4루타(홈런)로 변환!
 
-        if (nextStep === 1) { hitText = "미션 격파! 1루타 안타!"; points = 1; }
-        else if (nextStep === 2) { hitText = "미션 격파! 2루타!!"; points = 2; }
-        else if (nextStep === 3) { hitText = "미션 격파! 3루타!!!"; points = 3; }
-        else if (nextStep === 4) { hitText = "미션 격파! 솔로 홈런!!!"; points = 4; }
-        else if (nextStep === 5) { hitText = "🔥 올클리어 완료!! 2점 홈런!!! [+코스머니 1,000원]"; points = 4; }
+        if (baseAdvance === 1) hitLogText = "안타 가동! 1루타!";
+        else if (baseAdvance === 2) hitLogText = "장타 폭발! 2루타!!";
+        else if (baseAdvance === 3) hitLogText = "펜스 직격! 3루타!!!";
+        else if (hitType === 4) hitLogText = "💥 대형 홈런 작렬!!!!";
+        else if (hitType === 5) hitLogText = "🚀 연속 타석 백투백 홈런!!!!";
 
-        if(!confirm(`미션을 달성하셨습니까?`)) return;
+        if(!confirm(`미션을 클리어하셨습니까?\n확인 시 팀 주자가 진루합니다!`)) return;
 
-        const runner = document.getElementById('runner-piece');
-        runner.style.display = 'block';
-        
-        fetch(`${FIREBASE_URL}daily_cleared/${todayStr}/${myTeam}/${myPlayer}.json`, {
-            method: 'POST',
-            body: JSON.stringify(missionName)
-        })
-        .then(() => {
-            return fetch(`${FIREBASE_URL}daily_scores/${todayStr}/${myTeam}.json`).then(res => res.json());
-        })
-        .then((currentScore) => {
-            const scoreNum = currentScore ? parseInt(currentScore) : 0;
-            const newScore = scoreNum + points;
+        // 파이어베이스에서 공용 팀 상태 트랜잭션 수동 계산
+        fetch(`${FIREBASE_URL}team_status/${todayStr}/${myTeam}.json`).then(res => res.json()).then(data => {
+            let status = data || { bases: [0, 0, 0], score: 0 };
+            let bases = status.bases || [0, 0, 0];
+            let currentScore = status.score || 0;
+            let earnedPoints = 0;
 
-            return fetch(`${FIREBASE_URL}daily_scores/${todayStr}/${myTeam}.json`, {
-                method: 'PUT',
-                body: JSON.stringify(newScore)
-            });
-        })
-        .then(() => {
+            // ⚾ [진짜 야구 규칙 진루 시뮬레이터]
+            if (baseAdvance === 4) {
+                // 홈런: 누상의 모든 주자 주루 + 타자 득점
+                let runnersOnBase = bases[0] + bases[1] + bases[2];
+                earnedPoints = runnersOnBase + 1; // 기존 주자들 + 친 사람 득점
+                bases = [0, 0, 0]; // 베이스 청소
+                hitLogText += ` (${earnedPoints}점 주루 정산 완료!)`;
+            } else {
+                // 1루타, 2루타, 3루타 진루 알고리즘
+                for (let step = 0; step < baseAdvance; step++) {
+                    if (bases[2] === 1) { earnedPoints++; bases[2] = 0; } // 3루 주자 홈인
+                    if (bases[1] === 1) { bases[2] = 1; bases[1] = 0; }  // 2루 -> 3루
+                    if (bases[0] === 1) { bases[1] = 1; bases[0] = 0; }  // 1루 -> 2루
+                    
+                    if (step === 0) {
+                        bases[0] = 1; // 첫 스텝 때 타자가 1루에 먼저 들어감
+                    } else {
+                        // 2루타 이상일 때 타자도 같이 한 루씩 더 이동
+                        if (bases[2] === 1) { earnedPoints++; bases[2] = 0; }
+                        if (bases[1] === 1) { bases[2] = 1; bases[1] = 0; }
+                        if (bases[0] === 1) { bases[1] = 1; bases[0] = 0; }
+                    }
+                }
+                // 타자 최종 도달 주루 지정
+                bases[baseAdvance - 1] = 1;
+                if(earnedPoints > 0) hitLogText += ` (주자 홈인! +${earnedPoints}점)`;
+            }
+
+            currentScore += earnedPoints;
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-            
-            const logData = {
-                team: myTeam,
-                teamName: myTeamName,
-                player: myPlayer,
-                hitText: hitText,
-                time: timeStr
-            };
 
-            return fetch(`${FIREBASE_URL}logs.json`, { method: 'POST', body: JSON.stringify(logData) });
-        })
-        .then(() => { syncGameData(); if(nextStep === 5) alert("🎉 올클리어 보너스 정산 완료!"); });
+            // 1. 공용 베이스/스코어 갱신
+            fetch(`${FIREBASE_URL}team_status/${todayStr}/${myTeam}.json`, {
+                method: 'PUT',
+                body: JSON.stringify({ bases: bases, score: currentScore })
+            })
+            // 2. 개인 클리어 정보 스택 적재
+            .then(() => fetch(`${FIREBASE_URL}daily_cleared/${todayStr}/${myTeam}/${myPlayer}.json`, {
+                method: 'POST', body: JSON.stringify(missionName)
+            }))
+            // 3. 전광판 로그 사출
+            .then(() => fetch(`${FIREBASE_URL}logs.json`, {
+                method: 'POST',
+                body: JSON.stringify({ player: myPlayer, hitText: hitLogText, time: timeStr })
+            }))
+            .then(() => syncGameData());
+        });
     }
 
-    setInterval(syncGameData, 3000); 
+    setInterval(syncGameData, 3000);
     window.onload = syncGameData;
 </script>
 </body>
