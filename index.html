@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head> 
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>253 BASEBALL - MAIN</title>
@@ -18,18 +18,16 @@
         }
         h1 { font-family: 'Orbitron', sans-serif; color: #f2a900; font-size: 2rem; margin: 0 0 15px 0; letter-spacing: 2px; }
         
-        /* 📸 팀 로고 디스플레이 영역 */
         .logo-container {
             width: 100%; height: 180px; display: flex; align-items: center; justify-content: center;
-            margin-bottom: 20px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid #333;
-            overflow: hidden; position: relative;
+            margin-bottom: 20px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid #333; overflow: hidden;
         }
         .logo-img { height: 90%; object-fit: contain; display: none; animation: fadeIn 0.4s ease-in-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
         .form-group { margin-bottom: 16px; text-align: left; }
         label { display: block; font-size: 0.9rem; color: #aaa; margin-bottom: 6px; }
-        select, input {
+        select {
             width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444;
             background: #222630; color: #fff; font-family: 'Black Han Sans', sans-serif; font-size: 1rem; box-sizing: border-box;
         }
@@ -38,15 +36,13 @@
             border: none; border-radius: 8px; color: white; font-size: 1.2rem; font-family: 'Black Han Sans', sans-serif;
             cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .admin-section {
-            margin-top: 30px; border-top: 1px dashed #444; padding-top: 20px;
-        }
+        .admin-section { margin-top: 30px; border-top: 1px dashed #444; padding-top: 20px; }
         .admin-btn {
             padding: 10px 14px; background: #222630; border: 1px solid #f2a900; color: #f2a900;
             border-radius: 8px; font-size: 0.9rem; cursor: pointer; font-family: 'Black Han Sans', sans-serif; margin: 6px;
         }
 
-        /* 📋 첫출근자 미션 선택 모달 스타일 */
+        /* 📋 모달 스타일 */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
@@ -58,10 +54,9 @@
         .modal-title { font-size: 1.2rem; color: #ff4d4d; margin-bottom: 15px; text-align: center; }
         .selector-item {
             background: #222630; padding: 12px; border: 1px solid #444; border-radius: 8px;
-            margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.95rem; transition: background 0.2s;
+            margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem;
         }
-        .selector-item.selected { background: #ff4d4d; border-color: #fff; color: #white; }
+        .selector-item.selected { background: #ff4d4d; border-color: #fff; color: white; }
         .submit-pitch-btn {
             width: 100%; padding: 12px; background: #ff4d4d; border: none; border-radius: 8px;
             color: white; font-family: 'Black Han Sans', sans-serif; font-size: 1.1rem; cursor: pointer; margin-top: 15px;
@@ -73,11 +68,10 @@
     <div class="main-box">
         <h1>253 BASEBALL</h1>
         
-        <!-- 📸 실시간 연동 팀 로고 뷰어 -->
         <div class="logo-container">
-    <img id="logo-lions" class="logo-img" src="lions_logo.png" alt="COS LIONS">
-    <img id="logo-strikeouts" class="logo-img" src="strikeouts_logo.png" alt="KKK STRIKEOUTS">
-</div>
+            <img id="logo-lions" class="logo-img" src="lions_logo.png" alt="COS LIONS">
+            <img id="logo-strikeouts" class="logo-img" src="strikeouts_logo.png" alt="393 STRIKEOUTS">
+        </div>
 
         <div class="form-group">
             <label>소속 팀 선택</label>
@@ -88,13 +82,18 @@
         </div>
 
         <div class="form-group">
-            <label>선수 이름 입력 (매장 영문 닉네임)</label>
-            <input type="text" id="player-input" placeholder="예: SEONG GYEONG" autocomplete="off">
+            <label>선수 이름 선택</label>
+            <select id="player-select">
+                <option value="SEONG GYEONG">SEONG GYEONG</option>
+                <option value="JUNG HOON">JUNG HOON</option>
+                <option value="YEON WOO">YEON WOO</option>
+                <option value="MIN JI">MIN JI</option>
+                <option value="JU YEON">JU YEON</option>
+            </select>
         </div>
 
         <button class="start-btn" onclick="enterGame()">경기장 입장 🏟️</button>
 
-        <!-- ⚾ 첫출근자 전용: 상대 팀 미션 빌더 (지정 투구 방식) -->
         <div class="admin-section">
             <div style="font-size:0.85rem; color:#aaa; margin-bottom:10px;">☀️ 각 팀 첫출근자 전용 미션 투구</div>
             <button class="admin-btn" onclick="openMissionPitcher('B')">🦁 라이언즈가 삼구스 미션 지정</button>
@@ -105,7 +104,6 @@
         </div>
     </div>
 
-    <!-- 📋 미션 지정 팝업 모달 -->
     <div id="pitcher-modal" class="modal">
         <div class="modal-content">
             <div class="modal-title" id="modal-target-title">상대팀 미션 5개 지정하기</div>
@@ -120,29 +118,17 @@
     const FIREBASE_URL = "https://cos253baseball-default-rtdb.asia-southeast1.firebasedatabase.app/";
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // 📋 마스터 미션 풀 (15개)
     const missionPool = [
-        "피팅룸 4~5개 아이템 추천 3번",
-        "웰커밍 20번 진행하기",
-        "MSA 액션 진행하기",
-        "라운딩에서 배운 지식 활용하기 2번",
-        "포커스 가먼그룹 어프로치하기 3번",
-        "P.P 추천 3회 달성",
-        "오픈퀘스천 최소 2개 이상 하기 2번",
-        "매장 오버뷰 보기 2번",
-        "젠틀 노크 후 서비스하기 2번",
-        "옴니 스캔 3회 완료",
-        "스탁 오딧 1회 수행",
-        "라피 판매 1회 성공",
-        "이번주 포커스 G.G 맞추기",
-        "옴니 판매 1회 성공",
-        "고객님 풀착장 스타일링 2회"
+        "피팅룸 4~5개 아이템 추천 3번", "웰커밍 20번 진행하기", "MSA 액션 진행하기",
+        "라운딩에서 배운 지식 활용하기 2번", "포커스 가먼그룹 어프로치하기 3번", "P.P 추천 3회 달성",
+        "오픈퀘스천 최소 2개 이상 하기 2번", "매장 오버뷰 보기 2번", "젠틀 노크 후 서비스하기 2번",
+        "옴니 스캔 3회 완료", "스탁 오딧 1회 수행", "라피 판매 1회 성공",
+        "이번주 포커스 G.G 맞추기", "옴니 판매 1회 성공", "고객님 풀착장 스타일링 2회"
     ];
 
     let currentTargetTeam = ""; 
     let selectedMissions = [];
 
-    // 📸 셀렉트 박스 선택 시 상단 로고 이미지 스위칭
     function updateTeamLogo() {
         const team = document.getElementById('team-select').value;
         document.getElementById('logo-lions').style.display = (team === 'B') ? 'block' : 'none';
@@ -151,41 +137,44 @@
 
     function enterGame() {
         const teamSel = document.getElementById('team-select');
-        const playerIn = document.getElementById('player-input').value.trim().toUpperCase();
-
-        if(!playerIn) { alert("선수 이름을 입력해주세요!"); return; }
+        const playerSel = document.getElementById('player-select').value;
 
         localStorage.setItem('baseball_team', teamSel.value);
         localStorage.setItem('baseball_team_name', teamSel.options[teamSel.selectedIndex].text);
-        localStorage.setItem('baseball_player', playerIn);
+        localStorage.setItem('baseball_player', playerSel);
 
         location.href = 'game.html';
     }
 
-    // ⚾ 미션 투구 빌더 모달 열기
     function openMissionPitcher(attackerTeam) {
-        // 공격팀이 지정을 누르면 -> 타겟(수비팀)이 정해짐
-        // B(라이언즈)가 누르면 A(삼구스)에게 투구 / A(삼구스)가 누르면 B(라이언즈)에게 투구
         currentTargetTeam = (attackerTeam === 'A') ? 'B' : 'A';
-        const targetName = (currentTargetTeam === 'A') ? '🔥 삼구삼진스' : '🦁 코스 라이언즈';
         
-        document.getElementById('modal-target-title').innerText = `🎯 ${targetName}에게 던질 미션 5개 지정`;
-        selectedMissions = [];
-        updateModalCount();
+        // 🔒 미션 투구 중복 체크 (한 번 투구하면 수정 불가능하게 방어)
+        fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${currentTargetTeam}.json`).then(res => res.json()).then(data => {
+            if(data && data.list && data.list.length === 5) {
+                alert("⚠️ 이미 해당 팀의 오늘의 미션이 투구 완료되었습니다! (하루에 한 번만 투구 가능, 수정 불가)");
+                return;
+            }
+            
+            const targetName = (currentTargetTeam === 'A') ? '🔥 삼구삼진스' : '🦁 코스 라이언즈';
+            document.getElementById('modal-target-title').innerText = `🎯 ${targetName}에게 던질 미션 5개 지정`;
+            selectedMissions = [];
+            updateModalCount();
 
-        const poolContainer = document.getElementById('modal-mission-pool');
-        poolContainer.innerHTML = "";
+            const poolContainer = document.getElementById('modal-mission-pool');
+            poolContainer.innerHTML = "";
 
-        missionPool.forEach((mission, idx) => {
-            const div = document.createElement('div');
-            div.className = "selector-item";
-            div.id = `m-item-${idx}`;
-            div.innerHTML = `<span>${mission}</span>`;
-            div.onclick = () => toggleMissionSelect(mission, idx);
-            poolContainer.appendChild(div);
+            missionPool.forEach((mission, idx) => {
+                const div = document.createElement('div');
+                div.className = "selector-item";
+                div.id = `m-item-${idx}`;
+                div.innerHTML = `<span>${mission}</span>`;
+                div.onclick = () => toggleMissionSelect(mission, idx);
+                poolContainer.appendChild(div);
+            });
+
+            document.getElementById('pitcher-modal').style.display = 'flex';
         });
-
-        document.getElementById('pitcher-modal').style.display = 'flex';
     }
 
     function toggleMissionSelect(mission, idx) {
@@ -196,10 +185,7 @@
             selectedMissions.splice(existIdx, 1);
             itemEl.classList.remove('selected');
         } else {
-            if (selectedMissions.length >= 5) {
-                alert("미션은 딱 5개까지만 지정할 수 있습니다!");
-                return;
-            }
+            if (selectedMissions.length >= 5) { alert("미션은 딱 5개까지만 지정할 수 있습니다!"); return; }
             selectedMissions.push(mission);
             itemEl.classList.add('selected');
         }
@@ -210,48 +196,33 @@
         document.getElementById('modal-count-info').innerText = `선택된 미션: ${selectedMissions.length} / 5`;
     }
 
-    function closeModal() {
-        document.getElementById('pitcher-modal').style.display = 'none';
-    }
+    function closeModal() { document.getElementById('pitcher-modal').style.display = 'none'; }
 
-    // 🚀 수동 선택 완료 후 파이어베이스 투구 전송
     function submitSelectedMissions() {
-        if(selectedMissions.length !== 5) {
-            alert("정확히 5개의 미션을 선택해야 투구할 수 있습니다!");
-            return;
-        }
-
+        if(selectedMissions.length !== 5) { alert("정확히 5개의 미션을 선택해야 투구할 수 있습니다!"); return; }
         const targetName = (currentTargetTeam === 'A') ? '삼구삼진스' : '코스 라이언즈';
-        if(!confirm(`선택하신 5개의 미션을 ${targetName}팀의 타석 미션으로 확정 투구하시겠습니까?`)) return;
+        if(!confirm(`선택하신 5개의 미션을 ${targetName}팀의 최종 미션판으로 투구하시겠습니까? 이후 수정이 불가능합니다.`)) return;
 
         fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${currentTargetTeam}.json`, {
             method: 'PUT',
             body: JSON.stringify({ list: selectedMissions })
         })
         .then(() => {
-            alert(`🎯 ${targetName}팀 판에 미션 5개 지정 투구가 완벽히 끝났습니다!`);
+            alert(`🎯 ${targetName}팀에 미션 투구가 완료되었습니다!`);
             closeModal();
         });
     }
 
     function adminResetData() {
-        if(!confirm("⚠️ 경고: 오늘 진행된 양 팀의 전적, 스코어, 팀 베이스 주자 상황, 로그가 모두 삭제됩니다. 리셋하시겠습니까?")) return;
-
-        const missionUrl = `${FIREBASE_URL}daily_missions/${todayStr}.json`;
-        const clearedUrl = `${FIREBASE_URL}daily_cleared/${todayStr}.json`;
-        const teamStatusUrl = `${FIREBASE_URL}team_status/${todayStr}.json`;
-        const logUrl = `${FIREBASE_URL}logs.json`;
-
+        if(!confirm("⚠️ 경고: 오늘 진행된 양 팀의 데이터가 완전히 초기화됩니다. 리셋하시겠습니까?")) return;
         Promise.all([
-            fetch(missionUrl, { method: 'DELETE' }),
-            fetch(clearedUrl, { method: 'DELETE' }),
-            fetch(teamStatusUrl, { method: 'DELETE' }), 
-            fetch(logUrl, { method: 'DELETE' })
-        ])
-        .then(() => alert("오늘의 야구 게임이 깨끗하게 초기화되었습니다. 새 게임을 시작하세요!"));
+            fetch(`${FIREBASE_URL}daily_missions/${todayStr}.json`, { method: 'DELETE' }),
+            fetch(`${FIREBASE_URL}daily_cleared/${todayStr}.json`, { method: 'DELETE' }),
+            fetch(`${FIREBASE_URL}team_status/${todayStr}.json`, { method: 'DELETE' }), 
+            fetch(`${FIREBASE_URL}logs.json`, { method: 'DELETE' })
+        ]).then(() => alert("오늘의 게임이 초기화되었습니다!"));
     }
 
-    // 초기 실행 시 첫 로고 노출
     window.onload = updateTeamLogo;
 </script>
 </body>
