@@ -3,441 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>253 BASEBALL - DRIVE ACTION</title>
+    <title>253 BASEBALL - MAIN</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Black+Han+Sans&display=swap');
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght=700&family=Black+Han+Sans&display=swap');
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #0b0e14;
-            color: #ffffff;
-            font-family: 'Black Han Sans', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center; 
-            min-height: 100vh;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+            margin: 0; padding: 0; background-color: #0b0e14; color: #ffffff;
+            font-family: 'Black Han Sans', sans-serif; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; min-height: 100vh; padding: 20px; box-sizing: border-box;
         }
-
-        .login-container {
-            width: 92%;
-            max-width: 450px; /* 📱 갤럭시 표준 모델(S24 등)의 시원한 화면에 맞춘 가로폭 확장 */
-            padding: 22px 16px;
-            text-align: center;
-            background: linear-gradient(rgba(11, 14, 20, 0.82), rgba(11, 14, 20, 0.95)), 
-                        url('main.png') no-repeat center center; 
-            background-size: cover;
-            border: 3px solid #f2a900;
-            border-radius: 14px;
-            box-shadow: 0 0 25px rgba(242, 169, 0, 0.35);
-            position: relative;
-            z-index: 1;
+        .main-box {
+            width: 100%; max-width: 420px; background: rgba(17, 21, 28, 0.95);
+            border: 2px solid #f2a900; border-radius: 16px; padding: 24px; box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(242, 169, 0, 0.2); text-align: center;
         }
-
-        .main-title {
-            font-size: 2.5rem; /* 갤럭시 화면에 맞춰 타이틀 크기 가독성 업그레이드 */
-            color: #f2a900;
-            text-shadow: 2px 2px 0px #4a154b, 4px 4px 0px #000;
-            margin: 5px 0;
-            letter-spacing: 1px;
-        }
-
-        .sub-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.95rem;
-            color: #00bcd4;
-            margin-bottom: 18px;
-            text-shadow: 1px 1px 0px #000;
-        }
-
-        .team-selection {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .team-card {
-            background: rgba(20, 24, 33, 0.9);
-            border: 2px solid #333;
-            border-radius: 12px;
-            padding: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-align: left;
-            transition: all 0.2s ease;
-            position: relative;
-            z-index: 10; 
-        }
-
-        .team-card.team-a.selected {
-            border-color: #ff6b35;
-            background: rgba(255, 107, 53, 0.2);
-            box-shadow: 0 0 12px rgba(255, 107, 53, 0.4);
-        }
-
-        .team-card.team-b.selected {
-            border-color: #0077b6;
-            background: rgba(0, 119, 182, 0.2);
-            box-shadow: 0 0 12px rgba(0, 119, 182, 0.4);
-        }
-
-        .team-logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-        .team-a .team-logo { background: linear-gradient(135deg, #ff6b35, #4a154b); color: #fff; border: 1px solid #fff; }
-        .team-b .team-logo { background: linear-gradient(135deg, #0077b6, #f2a900); color: #fff; border: 1px solid #fff; }
-
-        .team-info-wrap {
-            flex-grow: 1;
-            position: relative;
-            z-index: 15;
-        }
-
-        .team-name-text {
-            font-size: 1.1rem;
-            margin-bottom: 6px;
-        }
-
-        .member-select {
-            width: 100%;
-            padding: 10px;
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.0rem; /* 안드로이드 가독성 최적화 */
-            background-color: #1a1d24;
-            color: #fff;
-            border: 2px solid #444;
-            border-radius: 8px;
-            position: relative;
-            z-index: 20;
-            outline: none;
-        }
-        .team-card.team-a.selected .member-select { border-color: #ff6b35; }
-        .team-card.team-b.selected .member-select { border-color: #0077b6; }
-
-        .mission-section {
-            display: none;
-            background: rgba(0, 0, 0, 0.95);
-            border: 2px solid #00bcd4;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        .mission-section.active { display: block; }
+        h1 { font-family: 'Orbitron', sans-serif; color: #f2a900; font-size: 2rem; margin: 0 0 15px 0; letter-spacing: 2px; }
         
-        .mission-header {
-            font-size: 0.95rem;
-            color: #00bcd4;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* 📸 팀 로고 디스플레이 영역 */
+        .logo-container {
+            width: 100%; height: 180px; display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid #333;
+            overflow: hidden; position: relative;
         }
-        
-        /* 📱 세로로 긴 갤럭시 화면 특성을 고려해 리스트 높이 확보 */
-        .mission-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            max-height: 160px; 
-            overflow-y: auto;
-            padding-right: 2px;
-        }
-        
-        .mission-item {
-            background: #1e1e1e;
-            border: 1px solid #333;
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .mission-item.selected {
-            background: #ff4d4d;
-            color: #fff;
-            border-color: #fff;
-        }
+        .logo-img { height: 90%; object-fit: contain; display: none; animation: fadeIn 0.4s ease-in-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
+        .form-group { margin-bottom: 16px; text-align: left; }
+        label { display: block; font-size: 0.9rem; color: #aaa; margin-bottom: 6px; }
+        select, input {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444;
+            background: #222630; color: #fff; font-family: 'Black Han Sans', sans-serif; font-size: 1rem; box-sizing: border-box;
+        }
         .start-btn {
-            width: 100%;
-            padding: 14px;
-            font-family: 'Black Han Sans', sans-serif;
-            font-size: 1.2rem;
-            background: linear-gradient(#f2a900, #ff8c00);
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 0px #b37d00;
-            position: relative;
-            z-index: 10;
+            width: 100%; padding: 14px; background: linear-gradient(135deg, #f2a900, #b88000);
+            border: none; border-radius: 8px; color: white; font-size: 1.2rem; font-family: 'Black Han Sans', sans-serif;
+            cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .start-btn:disabled {
-            background: #444;
-            color: #777;
-            box-shadow: none;
+        .admin-section {
+            margin-top: 30px; border-top: 1px dashed #444; padding-top: 20px;
+        }
+        .admin-btn {
+            padding: 10px 14px; background: #222630; border: 1px solid #f2a900; color: #f2a900;
+            border-radius: 8px; font-size: 0.9rem; cursor: pointer; font-family: 'Black Han Sans', sans-serif; margin: 6px;
         }
 
-        /* 관계자 리셋 버튼 스타일 */
-        .admin-reset-wrap {
-            margin-top: 20px;
-            text-align: center;
-            position: relative;
-            z-index: 100;
+        /* 📋 첫출근자 미션 선택 모달 스타일 */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
         }
-        .admin-reset-btn {
-            background: none;
-            border: 1px dashed #444;
-            color: #666;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            border-radius: 4px;
+        .modal-content {
+            background: #11151c; border: 2px solid #ff4d4d; border-radius: 16px; width: 100%; max-width: 400px;
+            padding: 20px; box-sizing: border-box; max-height: 85vh; overflow-y: auto;
+        }
+        .modal-title { font-size: 1.2rem; color: #ff4d4d; margin-bottom: 15px; text-align: center; }
+        .selector-item {
+            background: #222630; padding: 12px; border: 1px solid #444; border-radius: 8px;
+            margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.95rem; transition: background 0.2s;
+        }
+        .selector-item.selected { background: #ff4d4d; border-color: #fff; color: #white; }
+        .submit-pitch-btn {
+            width: 100%; padding: 12px; background: #ff4d4d; border: none; border-radius: 8px;
+            color: white; font-family: 'Black Han Sans', sans-serif; font-size: 1.1rem; cursor: pointer; margin-top: 15px;
         }
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    <div class="main-title">253 BASEBALL</div>
-    <div class="sub-title">LET'S DRIVE SALES!</div>
+    <div class="main-box">
+        <h1>253 BASEBALL</h1>
+        
+        <!-- 📸 실시간 연동 팀 로고 뷰어 -->
+        <div class="logo-container">
+            <img id="logo-lions" class="logo-img" src="ChatGPT Image 2026년 6월 30일 오후 11_45_57.png" alt="COS LIONS">
+            <img id="logo-strikeouts" class="logo-img" src="ChatGPT Image 2026년 6월 30일 오후 11_49_28.png" alt="393 STRIKEOUTS">
+        </div>
 
-    <div class="team-selection">
-        <div class="team-card team-a" id="card-a" onclick="selectTeam('A')">
-            <div class="team-logo">K</div>
-            <div class="team-info-wrap">
-                <div class="team-name-text">253 삼구삼진스</div>
-                <select class="member-select" id="members-a" onchange="checkReady()">
-                    <option value="">선수 선택</option>
-                    <option value="성경">성경</option>
-                    <option value="윤정">윤정</option>
-                    <option value="정훈">정훈</option>
-                    <option value="혜인">혜인</option>
-                    <option value="선우">선우</option>
-                </select>
+        <div class="form-group">
+            <label>소속 팀 선택</label>
+            <select id="team-select" onchange="updateTeamLogo()">
+                <option value="B">🦁 코스 라이언즈 (B)</option>
+                <option value="A">🔥 삼구삼진스 (A)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>선수 이름 입력 (매장 영문 닉네임)</label>
+            <input type="text" id="player-input" placeholder="예: SEONG GYEONG" autocomplete="off">
+        </div>
+
+        <button class="start-btn" onclick="enterGame()">경기장 입장 🏟️</button>
+
+        <!-- ⚾ 첫출근자 전용: 상대 팀 미션 빌더 (지정 투구 방식) -->
+        <div class="admin-section">
+            <div style="font-size:0.85rem; color:#aaa; margin-bottom:10px;">☀️ 각 팀 첫출근자 전용 미션 투구</div>
+            <button class="admin-btn" onclick="openMissionPitcher('B')">🦁 라이언즈가 삼구스 미션 지정</button>
+            <button class="admin-btn" onclick="openMissionPitcher('A')">🔥 삼구스가 라이언즈 미션 지정</button>
+            <div style="margin-top:15px;">
+                <button class="admin-btn" style="background:#4d1414; border-color:#ff4d4d; color:#ffb3b3; font-size:0.75rem; padding:6px 10px;" onclick="adminResetData()">🚨 경기 초기화</button>
             </div>
         </div>
+    </div>
 
-        <div class="team-card team-b" id="card-b" onclick="selectTeam('B')">
-            <div class="team-logo">L</div>
-            <div class="team-info-wrap">
-                <div class="team-name-text">코스 라이언즈</div>
-                <select class="member-select" id="members-b" onchange="checkReady()">
-                    <option value="">선수 선택</option>
-                    <option value="주하">주하</option>
-                    <option value="유진">유진</option>
-                    <option value="지인">지인</option>
-                    <option value="정환">정환</option>
-                    <option value="채령">채령</option>
-                </select>
-            </div>
+    <!-- 📋 미션 지정 팝업 모달 -->
+    <div id="pitcher-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modal-target-title">상대팀 미션 5개 지정하기</div>
+            <div style="font-size:0.8rem; color:#aaa; text-align:center; margin-bottom:12px;" id="modal-count-info">선택된 미션: 0 / 5</div>
+            <div id="modal-mission-pool"></div>
+            <button class="submit-pitch-btn" onclick="submitSelectedMissions()">⚾ 선택한 미션 투구하기</button>
+            <button class="admin-btn" style="width:100%; border:none; margin:8px 0 0 0; background:#333; color:#ccc;" onclick="closeModal()">닫기</button>
         </div>
     </div>
-
-    <div class="mission-section" id="mission-section">
-        <div class="mission-header">
-            <span id="mission-instruction-title" style="font-weight:bold; color:#ff4d4d;">🔥 상대 미션 던지기</span>
-            <span id="mission-count">(0 / 5)</span>
-        </div>
-        <div class="mission-grid" id="mission-grid"></div>
-    </div>
-
-    <button class="start-btn" id="start-btn" onclick="enterGame()" disabled>팀과 선수를 선택하세요</button>
-
-    <!-- 관계자 리셋 버튼 탑재 -->
-    <div class="admin-reset-wrap">
-        <button class="admin-reset-btn" onclick="adminResetData()">⚙️ 관계자 전체 데이터 리셋</button>
-    </div>
-</div>
 
 <script>
-    const FIREBASE_URL = "https://cos253baseball-default-rtdb.asia-southeast1.firebasedatabase.app/"; 
-    let selectedTeam = null;
-    let selectedMissions = [];
-    let isMissionAlreadySet = false;
-
+    const FIREBASE_URL = "https://cos253baseball-default-rtdb.asia-southeast1.firebasedatabase.app/";
     const todayStr = new Date().toISOString().split('T')[0];
 
+    // 📋 마스터 미션 풀 (15개)
     const missionPool = [
-        "아우터 판매 1건 달성", "니트 + 바지 세트 판매", "객단가 20만원 이상 달성",
-        "신상품 피팅 유도 3회", "결제 시 멤버십 신규 가입 유도", "액세서리 추가 판매 성공",
-        "단일 영수증 3PCS 이상 판매", "중요 존 마네킹 디스플레이 정비", "린넨 셔츠 판매 1건",
-        "오픈 직후 첫 마수걸이 판매", "고객 칭찬 카드 피드백 받기", "마감 전 라스트 스퍼트 판매",
-        "세일/프로모션 상품 연계 판매", "선물용 포장 판매 성공", "신발 또는 가방 카테고리 판매",
-        "크로스 셀링 세트 코디 판매"
+        "피팅룸 4~5개 아이템 추천 3번",
+        "웰커밍 20번 진행하기",
+        "MSA 액션 진행하기",
+        "라운딩에서 배운 지식 활용하기 2번",
+        "포커스 가먼그룹 어프로치하기 3번",
+        "P.P 추천 3회 달성",
+        "오픈퀘스천 최소 2개 이상 하기 2번",
+        "매장 오버뷰 보기 2번",
+        "젠틀 노크 후 서비스하기 2번",
+        "옴니 스캔 3회 완료",
+        "스탁 오딧 1회 수행",
+        "라피 판매 1회 성공",
+        "이번주 포커스 G.G 맞추기",
+        "옴니 판매 1회 성공",
+        "고객님 풀착장 스타일링 2회"
     ];
 
-    document.getElementById('members-a').addEventListener('click', (e) => { e.stopPropagation(); selectTeam('A'); });
-    document.getElementById('members-b').addEventListener('click', (e) => { e.stopPropagation(); selectTeam('B'); });
+    let currentTargetTeam = ""; 
+    let selectedMissions = [];
 
-    function initMissions() {
-        const grid = document.getElementById('mission-grid');
-        grid.innerHTML = "";
-        missionPool.forEach((m, idx) => {
-            const div = document.createElement('div');
-            div.className = "mission-item";
-            div.innerText = `${idx+1}. ${m}`;
-            div.onclick = (e) => { e.stopPropagation(); if(!isMissionAlreadySet) toggleMission(m, div); };
-            grid.appendChild(div);
-        });
-    }
-
-    function selectTeam(team) {
-        selectedTeam = team;
-        document.getElementById('card-a').classList.remove('selected');
-        document.getElementById('card-b').classList.remove('selected');
-        
-        if(team === 'A') {
-            document.getElementById('card-a').classList.add('selected');
-            document.getElementById('members-a').disabled = false;
-            document.getElementById('members-b').value = "";
-        } else {
-            document.getElementById('card-b').classList.add('selected');
-            document.getElementById('members-b').disabled = false;
-            document.getElementById('members-a').value = "";
-        }
-
-        const targetTeam = selectedTeam === 'A' ? 'B' : 'A';
-        const targetTeamName = selectedTeam === 'A' ? '코스 라이언즈' : '253 삼구삼진스';
-
-        fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${targetTeam}.json`)
-        .then(res => res.json())
-        .then(data => {
-            const titleText = document.getElementById('mission-instruction-title');
-            const section = document.getElementById('mission-section');
-            section.classList.add('active');
-
-            if (data && data.list && data.list.length === 5) {
-                isMissionAlreadySet = true;
-                titleText.innerText = `✅ [${targetTeamName}] 미션 투구 완료`;
-                document.getElementById('mission-grid').style.opacity = "0.4";
-                document.getElementById('mission-count').innerText = "";
-            } else {
-                isMissionAlreadySet = false;
-                titleText.innerText = `🎯 [${targetTeamName}] 미션 5개 지목`;
-                document.getElementById('mission-count').innerText = `(${selectedMissions.length} / 5)`;
-                document.getElementById('mission-grid').style.opacity = "1.0";
-                initMissions();
-            }
-            checkReady();
-        });
-    }
-
-    function toggleMission(mission, element) {
-        const idx = selectedMissions.indexOf(mission);
-        if(idx > -1) {
-            selectedMissions.splice(idx, 1);
-            element.classList.remove('selected');
-        } else {
-            if(selectedMissions.length >= 5) {
-                alert("미션은 최대 5개까지만 선택할 수 있습니다!");
-                return;
-            }
-            selectedMissions.push(mission);
-            element.classList.add('selected');
-        }
-        document.getElementById('mission-count').innerText = `(${selectedMissions.length} / 5)`;
-        checkReady();
-    }
-
-    function checkReady() {
-        const btn = document.getElementById('start-btn');
-        const nameA = document.getElementById('members-a').value;
-        const nameB = document.getElementById('members-b').value;
-        const hasPlayer = (selectedTeam === 'A' && nameA) || (selectedTeam === 'B' && nameB);
-
-        if (hasPlayer) {
-            if (isMissionAlreadySet) {
-                btn.disabled = false;
-                btn.innerText = `⚾ 경기장 입장하기`;
-            } else if (selectedMissions.length === 5) {
-                btn.disabled = false;
-                btn.innerText = `⚾ 미션 투구 완료 및 입장`;
-            } else {
-                btn.disabled = true;
-                btn.innerText = `상대 미션 5개를 채워주세요`;
-            }
-        } else {
-            btn.disabled = true;
-            btn.innerText = "팀과 선수를 선택하세요";
-        }
+    // 📸 셀렉트 박스 선택 시 상단 로고 이미지 스위칭
+    function updateTeamLogo() {
+        const team = document.getElementById('team-select').value;
+        document.getElementById('logo-lions').style.display = (team === 'B') ? 'block' : 'none';
+        document.getElementById('logo-strikeouts').style.display = (team === 'A') ? 'block' : 'none';
     }
 
     function enterGame() {
-        const name = selectedTeam === 'A' ? document.getElementById('members-a').value : document.getElementById('members-b').value;
-        const teamName = selectedTeam === 'A' ? "253 삼구삼진스" : "코스 라이언즈";
+        const teamSel = document.getElementById('team-select');
+        const playerIn = document.getElementById('player-input').value.trim().toUpperCase();
+
+        if(!playerIn) { alert("선수 이름을 입력해주세요!"); return; }
+
+        localStorage.setItem('baseball_team', teamSel.value);
+        localStorage.setItem('baseball_team_name', teamSel.options[teamSel.selectedIndex].text);
+        localStorage.setItem('baseball_player', playerIn);
+
+        location.href = 'game.html';
+    }
+
+    // ⚾ 미션 투구 빌더 모달 열기
+    function openMissionPitcher(attackerTeam) {
+        // 공격팀이 지정을 누르면 -> 타겟(수비팀)이 정해짐
+        // B(라이언즈)가 누르면 A(삼구스)에게 투구 / A(삼구스)가 누르면 B(라이언즈)에게 투구
+        currentTargetTeam = (attackerTeam === 'A') ? 'B' : 'A';
+        const targetName = (currentTargetTeam === 'A') ? '🔥 삼구삼진스' : '🦁 코스 라이언즈';
         
-        localStorage.setItem('baseball_team', selectedTeam);
-        localStorage.setItem('baseball_team_name', teamName);
-        localStorage.setItem('baseball_player', name);
+        document.getElementById('modal-target-title').innerText = `🎯 ${targetName}에게 던질 미션 5개 지정`;
+        selectedMissions = [];
+        updateModalCount();
 
-        const targetTeam = selectedTeam === 'A' ? 'B' : 'A';
+        const poolContainer = document.getElementById('modal-mission-pool');
+        poolContainer.innerHTML = "";
 
-        if (!isMissionAlreadySet) {
-            fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${targetTeam}.json`, {
-                method: 'PUT',
-                body: JSON.stringify({ byPlayer: name, list: selectedMissions })
-            }).then(() => { window.location.href = 'game.html'; });
-        } else {
-            window.location.href = 'game.html';
-        }
+        missionPool.forEach((mission, idx) => {
+            const div = document.createElement('div');
+            div.className = "selector-item";
+            div.id = `m-item-${idx}`;
+            div.innerHTML = `<span>${mission}</span>`;
+            div.onclick = () => toggleMissionSelect(mission, idx);
+            poolContainer.appendChild(div);
+        });
+
+        document.getElementById('pitcher-modal').style.display = 'flex';
     }
 
-    // 마스터 리셋 함수 (미션, 점수, 완료현황 기록을 파이어베이스에서 완전 삭제)
-    function adminResetData() {
-        const adminPassword = "253"; 
-        const inputPassword = prompt("관계자 비밀번호를 입력하세요:");
+    function toggleMissionSelect(mission, idx) {
+        const itemEl = document.getElementById(`m-item-${idx}`);
+        const existIdx = selectedMissions.indexOf(mission);
 
-        if (inputPassword === null) return; 
-
-        if (inputPassword === adminPassword) {
-            if (confirm("⚠️ 정말로 오늘자 [점수], [지정 미션], [개인별 수행 현황]을 완전히 리셋하시겠습니까?\n이 작업은 즉시 game.html에도 전파됩니다.")) {
-                
-                const missionUrl = `${FIREBASE_URL}daily_missions/${todayStr}.json`;
-                const scoreUrl = `${FIREBASE_URL}daily_scores/${todayStr}.json`;
-                const clearedUrl = `${FIREBASE_URL}daily_cleared/${todayStr}.json`; 
-                const logUrl = `${FIREBASE_URL}logs.json`; // 실시간 로그 피드 초기화
-
-                Promise.all([
-                    fetch(missionUrl, { method: 'DELETE' }),
-                    fetch(scoreUrl, { method: 'DELETE' }),
-                    fetch(clearedUrl, { method: 'DELETE' }),
-                    fetch(logUrl, { method: 'DELETE' })
-                ])
-                .then(() => {
-                    alert("✅ 오늘자 모든 데이터가 깨끗하게 공장 초기화되었습니다!");
-                    window.location.reload(); 
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("❌ 리셋 작업 중 오류가 발생했습니다.");
-                });
+        if (existIdx > -1) {
+            selectedMissions.splice(existIdx, 1);
+            itemEl.classList.remove('selected');
+        } else {
+            if (selectedMissions.length >= 5) {
+                alert("미션은 딱 5개까지만 지정할 수 있습니다!");
+                return;
             }
-        } else {
-            alert("❌ 비밀번호가 틀렸습니다. 관리자만 가능합니다.");
+            selectedMissions.push(mission);
+            itemEl.classList.add('selected');
         }
+        updateModalCount();
     }
 
-    initMissions();
+    function updateModalCount() {
+        document.getElementById('modal-count-info').innerText = `선택된 미션: ${selectedMissions.length} / 5`;
+    }
+
+    function closeModal() {
+        document.getElementById('pitcher-modal').style.display = 'none';
+    }
+
+    // 🚀 수동 선택 완료 후 파이어베이스 투구 전송
+    function submitSelectedMissions() {
+        if(selectedMissions.length !== 5) {
+            alert("정확히 5개의 미션을 선택해야 투구할 수 있습니다!");
+            return;
+        }
+
+        const targetName = (currentTargetTeam === 'A') ? '삼구삼진스' : '코스 라이언즈';
+        if(!confirm(`선택하신 5개의 미션을 ${targetName}팀의 타석 미션으로 확정 투구하시겠습니까?`)) return;
+
+        fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${currentTargetTeam}.json`, {
+            method: 'PUT',
+            body: JSON.stringify({ list: selectedMissions })
+        })
+        .then(() => {
+            alert(`🎯 ${targetName}팀 판에 미션 5개 지정 투구가 완벽히 끝났습니다!`);
+            closeModal();
+        });
+    }
+
+    function adminResetData() {
+        if(!confirm("⚠️ 경고: 오늘 진행된 양 팀의 전적, 스코어, 팀 베이스 주자 상황, 로그가 모두 삭제됩니다. 리셋하시겠습니까?")) return;
+
+        const missionUrl = `${FIREBASE_URL}daily_missions/${todayStr}.json`;
+        const clearedUrl = `${FIREBASE_URL}daily_cleared/${todayStr}.json`;
+        const teamStatusUrl = `${FIREBASE_URL}team_status/${todayStr}.json`;
+        const logUrl = `${FIREBASE_URL}logs.json`;
+
+        Promise.all([
+            fetch(missionUrl, { method: 'DELETE' }),
+            fetch(clearedUrl, { method: 'DELETE' }),
+            fetch(teamStatusUrl, { method: 'DELETE' }), 
+            fetch(logUrl, { method: 'DELETE' })
+        ])
+        .then(() => alert("오늘의 야구 게임이 깨끗하게 초기화되었습니다. 새 게임을 시작하세요!"));
+    }
+
+    // 초기 실행 시 첫 로고 노출
+    window.onload = updateTeamLogo;
 </script>
 </body>
 </html>
