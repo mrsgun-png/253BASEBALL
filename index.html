@@ -43,7 +43,6 @@
             border-radius: 8px; font-size: 0.9rem; cursor: pointer; font-family: 'Black Han Sans', sans-serif; margin: 6px;
         }
 
-        /* ⚾ 채색된 리얼 야구공 아이콘 스타일 */
         .real-baseball-icon {
             width: 18px; height: 18px; object-fit: contain; vertical-align: middle; flex-shrink: 0;
         }
@@ -169,7 +168,6 @@
     function enterGame() {
         const teamSel = document.getElementById('team-select');
         const playerSel = document.getElementById('player-select').value;
-
         let displayName = teamSel.options[teamSel.selectedIndex].text;
 
         localStorage.setItem('baseball_team', teamSel.value);
@@ -179,7 +177,7 @@
         location.href = 'game.html';
     }
 
-    // 🛠️ [로직 직관화 완결] targetTeam 매개변수 자체가 '미션이 심어질 대상 팀'을 의미합니다.
+    // 🛠️ [타겟 텍스트 불일치 해결] 팝업 상단 안내 문구를 명확하게 매칭했습니다.
     function openMissionPitcher(targetTeam) {
         currentTargetTeam = targetTeam; 
         
@@ -190,10 +188,12 @@
             }
             
             const titleEl = document.getElementById('modal-target-title');
+            // 코드가 A(삼구삼진스) 미션판을 향하고 있다면 -> 즉, 라이언즈가 지정 중인 상황
             if (currentTargetTeam === 'A') {
-                titleEl.innerHTML = `<img src="https://img.icons8.com/emoji/48/baseball.png" class="real-baseball-icon"> 삼구삼진스 미션판 세팅`;
+                titleEl.innerHTML = `🎯 삼구삼진스에게 던질 미션 5개 선택`;
             } else {
-                titleEl.innerHTML = `🦁 코스 라이언즈 미션판 세팅`;
+                // 코드가 B(코스 라이언즈) 미션판을 향하고 있다면 -> 즉, 삼구삼진스가 지정 중인 상황
+                titleEl.innerHTML = `🎯 라이언즈에게 던질 미션 5개 선택`;
             }
 
             selectedMissions = [];
@@ -241,7 +241,6 @@
         const targetName = (currentTargetTeam === 'A') ? '삼구삼진스' : '코스 라이언즈';
         if(!confirm(`선택하신 5개의 미션을 ${targetName}팀의 최종 미션판으로 투구하시겠습니까?`)) return;
 
-        // 고정된 currentTargetTeam 경로 데이터베이스에 다이렉트로 주입되므로 절대로 꼬이지 않습니다.
         fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${currentTargetTeam}.json`, {
             method: 'PUT',
             body: JSON.stringify({ list: selectedMissions })
