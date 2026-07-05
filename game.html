@@ -25,23 +25,26 @@
             transform: translate(-50%, -50%); display: none; box-shadow: 0 0 10px #fffb00, 0 0 20px #ffea00;
             animation: arcade-blink 0.6s infinite alternate; transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        @keyframes arcade-blink {
-            0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-        }
+        @keyframes arcade-blink { 0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
+        
         .scoreboard { width: 100%; max-width: 450px; background: rgba(17, 21, 28, 0.95); border: 2px solid #f2a900; border-radius: 12px; padding: 12px; box-sizing: border-box; margin-bottom: 12px; }
         .board-header { text-align: center; font-family: 'Orbitron', sans-serif; color: #f2a900; font-size: 1.0rem; margin-bottom: 8px; border-bottom: 1px dashed #444; padding-bottom: 4px; }
         .team-row { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.6); padding: 8px 14px; border-radius: 8px; margin-top: 5px; }
         .board-score { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; }
+        
         .action-board { width: 100%; max-width: 450px; background: rgba(0, 0, 0, 0.9); border: 2px solid #ff4d4d; border-radius: 12px; padding: 14px; box-sizing: border-box; margin-bottom: 12px; }
         .action-title { font-size: 1.05rem; color: #ff4d4d; margin-bottom: 10px; text-align: center; }
         .mission-list { display: flex; flex-direction: column; gap: 8px; }
         .mission-btn {
-            width: 100%; padding: 14px 12px; font-family: 'Black Han Sans', sans-serif; font-size: 1.0rem;
+            width: 100%; padding: 14px 12px; font-family: 'Black Han Sans', sans-serif; font-size: 0.9rem;
             border: 2px solid #444; border-radius: 8px; background: #1e222b; color: #fff; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
+            display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; text-align: left;
         }
         .mission-btn.cleared { background: #111; color: #444; border-color: #222; text-decoration: line-through; pointer-events: none; }
+        
+        /* 특수 NOR 미션 강조 디자인 */
+        .nor-mission { border-color: #f2a900; background: rgba(242, 169, 0, 0.1); }
+        
         .log-container { width: 100%; max-width: 450px; background: rgba(0, 0, 0, 0.9); border: 1px solid #222; border-radius: 8px; padding: 8px; max-height: 80px; overflow-y: auto; }
         .log-item { padding: 4px 0; font-size: 0.8rem; border-bottom: 1px dashed #222; color: #aaa; }
     </style>
@@ -62,7 +65,7 @@
     <div class="scoreboard">
         <div class="board-header" id="today-board-title">TEAM REAL BASEBALL</div>
         <div class="team-row" style="border-left: 5px solid #ff6b35;">
-            <div>🔥 삼구삼진스</div><div class="board-score" id="score-A" style="color:#ff6b35;">0</div>
+            <div>⚾ 삼구삼진스</div><div class="board-score" id="score-A" style="color:#ff6b35;">0</div>
         </div>
         <div class="team-row" style="border-left: 5px solid #0077b6;">
             <div>🦁 코스 라이언즈</div><div class="board-score" id="score-B" style="color:#0077b6;">0</div>
@@ -87,6 +90,15 @@
 
     document.getElementById('user-team-display').innerText = myTeamName.split(' ')[1] || myTeamName;
     document.getElementById('user-player-display').innerText = `[${myPlayer}]`;
+
+    // 🗓️ 오늘 요일에 따른 NOR Goal 자동 계산 함수
+    function getDailyNorGoal() {
+        const day = new Date().getDay(); // 0:일, 1:월 ~ 6:토
+        if (day === 5) return 60; // 금
+        if (day === 6) return 80; // 토
+        if (day === 0) return 65; // 일
+        return 55; // 월~목 평일
+    }
 
     function syncGameData() {
         fetch(`${FIREBASE_URL}team_status/${todayStr}.json`).then(res => res.json()).then(data => {
@@ -120,6 +132,23 @@
                 listContainer.innerHTML = "";
                 const myCurrentHits = clearedMissions.length;
 
+                // 🌟 [특수기능] 매일 최상단에 뜨는 고정 데일리 NOR 미션
+                const currentNorGoal = getDailyNorGoal();
+                const norMissionName = `[데일리 팀 목표] NOR Goal ${currentNorGoal}개 달성`;
+                const norBtn = document.createElement('button');
+                norBtn.className = "mission-btn nor-mission";
+                
+                if(clearedMissions.includes(norMissionName)) {
+                    norBtn.classList.add('cleared');
+                    norBtn.innerHTML = `<span>✅ 완료: ${norMissionName}</span>`;
+                } else {
+                    // 데일리 미션은 달성 시 무조건 '솔로 홈런' 효과 (4칸 진루) 부여
+                    norBtn.innerHTML = `<span>🌟 ${norMissionName}</span> <span style="color:#f2a900; font-size:0.85rem; flex-shrink:0; text-align:right;">👉 💥 팀 홈런!</span>`;
+                    norBtn.onclick = () => clearRealBaseballMission(norMissionName, 4);
+                }
+                listContainer.appendChild(norBtn);
+
+                // 일반 5개 미션 렌더링
                 data.list.forEach((mission) => {
                     const btn = document.createElement('button');
                     btn.className = "mission-btn";
@@ -134,9 +163,9 @@
                         else if(nextHits === 2) hitTypeTip = "2루타!! ⚾⚾";
                         else if(nextHits === 3) hitTypeTip = "3루타!!! ⚾⚾⚾";
                         else if(nextHits === 4) hitTypeTip = "💥 솔로 홈런!!!";
-                        else if(nextHits === 5) hitTypeTip = "🚀 백투백 홈런!!!";
+                        else if(nextHits >= 5) hitTypeTip = "🚀 백투백 홈런!!!";
 
-                        btn.innerHTML = `<span>🎯 ${mission}</span> <span style="color:#ff4d4d; font-size:0.85rem;">👉 ${hitTypeTip}</span>`;
+                        btn.innerHTML = `<span>🎯 ${mission}</span> <span style="color:#ff4d4d; font-size:0.85rem; flex-shrink:0; text-align:right;">👉 ${hitTypeTip}</span>`;
                         btn.onclick = () => clearRealBaseballMission(mission, nextHits);
                     }
                     listContainer.appendChild(btn);
@@ -160,42 +189,34 @@
 
     function clearRealBaseballMission(missionName, hitType) {
         let hitLogText = "";
-        let hits = hitType > 4 ? 4 : hitType; // 4와 5 모두 홈런(4칸 진루) 처리
+        let hits = hitType > 4 ? 4 : hitType; 
 
-        if (hits === 1) hitLogText = "안타 가동! 1루타!";
+        if (missionName.includes('NOR Goal')) hitLogText = "🌟 데일리 목표 달성! 팀 특별 홈런 작렬!!!!";
+        else if (hits === 1) hitLogText = "안타 가동! 1루타!";
         else if (hits === 2) hitLogText = "장타 폭발! 2루타!!";
         else if (hits === 3) hitLogText = "펜스 직격! 3루타!!!";
         else if (hitType === 4) hitLogText = "💥 대형 홈런 작렬!!!!";
-        else if (hitType === 5) hitLogText = "🚀 연속 타석 백투백 홈런!!!!";
+        else if (hitType >= 5) hitLogText = "🚀 연속 타석 백투백 홈런!!!!";
 
-        if(!confirm(`미션을 클리어하셨습니까?`)) return;
+        if(!confirm(`정말 미션을 클리어하셨습니까?`)) return;
 
         fetch(`${FIREBASE_URL}team_status/${todayStr}/${myTeam}.json`).then(res => res.json()).then(data => {
             let status = data || { bases: [0, 0, 0], score: 0 };
             let currentBases = status.bases || [0, 0, 0];
             let currentScore = status.score || 0;
-            
             let nextBases = [0, 0, 0];
             let earnedPoints = 0;
 
-            // ⚾ [진짜 야구 규칙 점수 시뮬레이터 보정 완료]
             if (hits === 4) {
-                // 홈런: 루상의 모든 주자 수만큼 득점 + 타자 본인 1점 득점
                 earnedPoints = currentBases[0] + currentBases[1] + currentBases[2] + 1;
-                nextBases = [0, 0, 0]; // 주자 클리어
+                nextBases = [0, 0, 0]; 
             } else {
-                // 1~3루타 정밀 계산식
-                // 1단계: 기존 루상 주자들의 전진 배치 및 홈인 정산
                 for (let b = 2; b >= 0; b--) {
                     if (currentBases[b] === 1) {
-                        if (b + hits >= 3) {
-                            earnedPoints++; // 3루 이상 밀려나면 득점
-                        } else {
-                            nextBases[b + hits] = 1; // 해당 루로 안착
-                        }
+                        if (b + hits >= 3) { earnedPoints++; } 
+                        else { nextBases[b + hits] = 1; }
                     }
                 }
-                // 2단계: 배팅을 친 타자 본인의 베이스 안착
                 nextBases[hits - 1] = 1;
             }
 
@@ -206,15 +227,13 @@
             const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
             fetch(`${FIREBASE_URL}team_status/${todayStr}/${myTeam}.json`, {
-                method: 'PUT',
-                body: JSON.stringify({ bases: nextBases, score: currentScore })
+                method: 'PUT', body: JSON.stringify({ bases: nextBases, score: currentScore })
             })
             .then(() => fetch(`${FIREBASE_URL}daily_cleared/${todayStr}/${myTeam}/${myPlayer}.json`, {
                 method: 'POST', body: JSON.stringify(missionName)
             }))
             .then(() => fetch(`${FIREBASE_URL}logs.json`, {
-                method: 'POST',
-                body: JSON.stringify({ player: myPlayer, hitText: hitLogText, time: timeStr })
+                method: 'POST', body: JSON.stringify({ player: myPlayer, hitText: hitLogText, time: timeStr })
             }))
             .then(() => syncGameData());
         });
