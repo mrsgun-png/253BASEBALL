@@ -33,7 +33,7 @@
         .board-score { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; }
         
         .action-board { width: 100%; max-width: 450px; background: rgba(0, 0, 0, 0.9); border: 2px solid #ff4d4d; border-radius: 12px; padding: 14px; box-sizing: border-box; margin-bottom: 12px; }
-        .action-title { font-size: 1.05rem; color: #ff4d4d; margin-bottom: 10px; text-align: center; }
+        .action-title { font-size: 1.05rem; color: #ff4d4d; margin-bottom: 10px; text-align: center; line-height:1.4; }
         .mission-list { display: flex; flex-direction: column; gap: 8px; }
         .mission-btn {
             width: 100%; padding: 14px 12px; font-family: 'Black Han Sans', sans-serif; font-size: 0.9rem;
@@ -73,7 +73,7 @@
     </div>
 
     <div class="action-board">
-        <div class="action-title" id="dynamic-action-title">⚠️ 상대 미션 로드 중...</div>
+        <div class="action-title" id="dynamic-action-title">⚠️ 통신 중...</div>
         <div class="mission-list" id="game-mission-list"></div>
     </div>
 
@@ -91,16 +91,17 @@
     document.getElementById('user-team-display').innerText = myTeamName.split(' ')[1] || myTeamName;
     document.getElementById('user-player-display').innerText = `[${myPlayer}]`;
 
-    // 🗓️ 오늘 요일에 따른 NOR Goal 자동 계산 함수
+    // 🗓️ 오늘 요일에 따른 NOR Goal 자동 계산
     function getDailyNorGoal() {
-        const day = new Date().getDay(); // 0:일, 1:월 ~ 6:토
+        const day = new Date().getDay(); 
         if (day === 5) return 60; // 금
         if (day === 6) return 80; // 토
         if (day === 0) return 65; // 일
-        return 55; // 월~목 평일
+        return 55; // 월~목
     }
 
     function syncGameData() {
+        // 1. 점수 및 루상 상태 동기화
         fetch(`${FIREBASE_URL}team_status/${todayStr}.json`).then(res => res.json()).then(data => {
             const scoreA = (data && data.A) ? data.A.score : 0;
             const scoreB = (data && data.B) ? data.B.score : 0;
@@ -115,24 +116,19 @@
             document.getElementById('runner-3').style.display = bases[2] === 1 ? 'block' : 'none';
         });
 
+        // 2. 미션 리스트 렌더링 (순서 분리)
         fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${myTeam}.json`).then(res => res.json()).then(data => {
-            const listContainer = document.getElementById('game-mission-list');
-            const titleEl = document.getElementById('dynamic-action-title');
-
-            if (!data || !data.list) {
-                titleEl.innerText = "⏳ 상대팀 미션 투구 대기 중...";
-                listContainer.innerHTML = "";
-                return;
-            }
-
-            titleEl.innerText = `💣 현재 내 진루권 미션판`;
-            
             fetch(`${FIREBASE_URL}daily_cleared/${todayStr}/${myTeam}/${myPlayer}.json`).then(res => res.json()).then(cData => {
+                const listContainer = document.getElementById('game-mission-list');
+                const titleEl = document.getElementById('dynamic-action-title');
+                
                 const clearedMissions = cData ? Object.values(cData) : [];
-                listContainer.innerHTML = "";
                 const myCurrentHits = clearedMissions.length;
 
-                // 🌟 [특수기능] 매일 최상단에 뜨는 고정 데일리 NOR 미션
+                // 항상 화면 초기화
+                listContainer.innerHTML = "";
+
+                // 🌟 [핵심 변경] 상대팀 미션 지정 여부와 상관없이 NOR Goal은 무조건 먼저 그립니다!
                 const currentNorGoal = getDailyNorGoal();
                 const norMissionName = `[데일리 팀 목표] NOR Goal ${currentNorGoal}개 달성`;
                 const norBtn = document.createElement('button');
@@ -142,13 +138,20 @@
                     norBtn.classList.add('cleared');
                     norBtn.innerHTML = `<span>✅ 완료: ${norMissionName}</span>`;
                 } else {
-                    // 데일리 미션은 달성 시 무조건 '솔로 홈런' 효과 (4칸 진루) 부여
                     norBtn.innerHTML = `<span>🌟 ${norMissionName}</span> <span style="color:#f2a900; font-size:0.85rem; flex-shrink:0; text-align:right;">👉 💥 팀 홈런!</span>`;
                     norBtn.onclick = () => clearRealBaseballMission(norMissionName, 4);
                 }
                 listContainer.appendChild(norBtn);
 
-                // 일반 5개 미션 렌더링
+                // ⚔️ 그 다음, 상대팀이 미션을 던졌는지 확인
+                if (!data || !data.list) {
+                    titleEl.innerHTML = "⏳ 상대팀 미션 투구 대기 중...<br><span style='font-size:0.8rem; color:#aaa;'>(위에 있는 데일리 팀 목표는 먼저 진행 가능합니다)</span>";
+                    return; // 상대팀 미션이 없으면 여기서 스톱!
+                }
+
+                // 상대팀이 미션을 던졌다면 제목을 바꾸고 나머지 6개 미션을 아래에 붙입니다.
+                titleEl.innerText = `💣 현재 내 진루권 미션판`;
+
                 data.list.forEach((mission) => {
                     const btn = document.createElement('button');
                     btn.className = "mission-btn";
@@ -158,7 +161,7 @@
                         btn.innerHTML = `<span>✅ 완료: ${mission}</span>`;
                     } else {
                         let hitTypeTip = "";
-                        let nextHits = myCurrentHits + 1;
+                        let nextHits = myCurrentHits + 1; // 클리어한 횟수에 따라 진루 칸수 증가
                         if(nextHits === 1) hitTypeTip = "1루타 안타! ⚾";
                         else if(nextHits === 2) hitTypeTip = "2루타!! ⚾⚾";
                         else if(nextHits === 3) hitTypeTip = "3루타!!! ⚾⚾⚾";
@@ -173,6 +176,7 @@
             });
         });
 
+        // 3. 로그 피드 동기화
         fetch(`${FIREBASE_URL}logs.json?orderBy="$key"&limitToLast=5`).then(res => res.json()).then(data => {
             const feed = document.getElementById('log-feed');
             if(!data) return;
