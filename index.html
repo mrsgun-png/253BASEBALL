@@ -45,7 +45,7 @@
 
         .real-baseball-icon { width: 18px; height: 18px; object-fit: contain; vertical-align: middle; flex-shrink: 0; }
 
-        /* 📋 모달 스타일 (미션 카테고리화 대응) */
+        /* 📋 모달 스타일 */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
@@ -114,11 +114,9 @@
         </div>
     </div>
 
-    <!-- 미션 지정 모달 -->
     <div id="pitcher-modal" class="modal">
         <div class="modal-content">
             <div class="modal-title" id="modal-target-title">상대팀 미션 6개 지정하기</div>
-            <!-- 목표 개수가 6개로 반영되었습니다 -->
             <div style="font-size:0.8rem; color:#aaa; text-align:center; margin-bottom:10px; flex-shrink:0;" id="modal-count-info">선택된 미션: 0 / 6</div>
             <div id="modal-mission-pool" class="pool-container"></div>
             <button class="submit-pitch-btn" onclick="submitSelectedMissions()">⚾ 선택한 미션 투구하기</button>
@@ -126,7 +124,6 @@
         </div>
     </div>
 
-    <!-- 전적 보드 모달 -->
     <div id="history-modal" class="modal">
         <div class="modal-content">
             <div class="modal-title">🏆 7월 시즌 승패 전적</div>
@@ -144,13 +141,30 @@
         B: ["주하", "유진", "지인", "정환", "채령"]  
     };
 
+    // 📋 정밀 조정된 새로운 카테고리별 미션 리스트 (총 11개)
     const missionCategories = {
-        "1층": ["웰커밍 20회", "하이퍼텍스처 옷 2개이상 피팅룸으로 보내기"],
-        "2층": ["어디셔널 아이템 2개이상 2회추천", "어프로치하여 풀 스타일링 2회"],
-        "3층": ["MSA 액션 팔로업하기", "17,19포커스 + 바텀 추천하기", "7 journey 시도하기"],
-        "공유": ["워키로 세일즈 공유 및 간단한 액션 만들어서 공유하기"],
-        "옴니": ["옴니 - 3회스캔 또는 판매 1회"],
-        "웰빙": ["출근팀 전원 PCA액션 팔로업하기"]
+        "1층": [
+            "하이퍼텍스처 옷 2개이상 피팅룸으로 보내기",
+            "17,19아이템 다른 아이템과 같이 추천하기"
+        ],
+        "2층": [
+            "어디셔널 아이템 2개이상 2회추천",
+            "어프로치하여 풀 스타일링 2회",
+            "17,19 + 다른 아이템 추천하기"
+        ],
+        "3층": [
+            "New edit 키워드 활용하여 cx하기",
+            "16+ 다른 아이템 같이 추천하기"
+        ],
+        "공유": [
+            "워키로 세일즈 공유 및 간단한 액션 만들어서 공유하기"
+        ],
+        "옴니": [
+            "옴니 - 3회스캔 또는 판매 1회"
+        ],
+        "웰빙": [
+            "출근팀 전원 PCA액션 팔로업하기"
+        ]
     };
 
     let currentTargetTeam = ""; 
@@ -193,7 +207,6 @@
         currentTargetTeam = targetTeam; 
         
         fetch(`${FIREBASE_URL}daily_missions/${todayStr}/${currentTargetTeam}.json`).then(res => res.json()).then(data => {
-            // 이미 6개가 지정되었는지 방어
             if(data && data.list && data.list.length === 6) {
                 alert("⚠️ 이미 해당 팀의 오늘의 미션이 투구 완료되었습니다! (수정 불가)"); return;
             }
@@ -230,7 +243,6 @@
             selectedMissions.splice(existIdx, 1);
             itemEl.classList.remove('selected');
         } else {
-            // 선택 리미트를 6개로 수정
             if (selectedMissions.length >= 6) { alert("미션은 딱 6개까지만 지정할 수 있습니다!"); return; }
             selectedMissions.push(mission);
             itemEl.classList.add('selected');
@@ -245,7 +257,6 @@
     function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
     function submitSelectedMissions() {
-        // 투구 조건 리미트를 6개로 수정
         if(selectedMissions.length !== 6) { alert("정확히 6개의 미션을 선택해야 투구할 수 있습니다!"); return; }
         const targetName = (currentTargetTeam === 'A') ? '삼구삼진스' : '코스 라이언즈';
         if(!confirm(`선택하신 6개의 미션을 ${targetName}팀의 최종 미션판으로 투구하시겠습니까?`)) return;
